@@ -18,9 +18,11 @@ name = "main_state"
 dragon = None
 background = None
 monster1 = None
+monster2 = None
+monster3 = None
 
 def enter():
-    global dragon, background, monster1
+    global dragon, background, monster1, monster2, monster3
     dragon = Dragon()
     background = Background()
     monster1 = Monster1(690, 240)

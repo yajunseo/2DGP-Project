@@ -9,16 +9,16 @@ class Monster1:
         self.turn = random.randint(-100, 100)
         self.frame = random.randint(0, 12)
         self.dir = 1
-        self.frame_speed = 0
+        self.frame_speed_control = 0
         if self.image == None:
             self.image = load_image('sprite\\Enemy\\walker.png')
 
 
     def update(self):
-        self.frame_speed += 1
-        if self.frame_speed > 30:
+        self.frame_speed_control += 1
+        if self.frame_speed_control > 30:
             self.frame = (self.frame + 1) % 12
-            self.frame_speed = 0
+            self.frame_speed_control = 0
         self.turn += 1
         if self.turn >= 0:
             self.dir = 1

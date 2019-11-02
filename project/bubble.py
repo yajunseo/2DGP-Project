@@ -9,9 +9,9 @@ class Bubble:
             Bubble.image = load_image('sprite\\Effect\\bubbles.png')
         self.x, self.y, self.velocity = x, y, velocity
         self.frame = 0
-        self.frame_speed = 0
+        self.frame_speed_control = 0
         self.timer = 0
-        self.reflect = 0
+        self.is_reflect = False
 
 
     def draw(self):
@@ -24,23 +24,23 @@ class Bubble:
 
     def update(self):
         self.timer += 1
-        self.frame_speed += 1
-        if self.frame_speed > 30:
+        self.frame_speed_control += 1
+        if self.frame_speed_control > 30:
             self.frame = (self.frame + 1) % 2
-            self.frame_speed = 0
+            self.frame_speed_control = 0
         if 80 < self.x and self.x < 890:
             self.x += self.velocity * 2
         if self.x <= 80 or self.x >= 890:
             if self.y < 510:
-                if self.reflect == 0:
+                if self.is_reflect == False:
                     self.y += 0.5
-                elif self.reflect == 1:
+                elif self.is_reflect == True:
                     self.y -= 0.5
                 if self.y == 509:
-                    self.reflect = 1
+                    self.is_reflect = True
 
-                if self.reflect == 1 and self.y == 500:
-                    self.reflect = 0
+                if self.is_reflect == True and self.y == 500:
+                    self.is_reflect = False
 
 
         if self.timer == 3000:
