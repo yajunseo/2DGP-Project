@@ -5,6 +5,7 @@ from project.game_code.state_code import main_state
 name = "PauseState"
 image = None
 
+
 def enter():
     global image
     image = load_image('sprite\\Game_pause.png')
@@ -12,7 +13,7 @@ def enter():
 
 def exit():
     global image
-    del(image)
+    del (image)
 
 
 def handle_events():
@@ -21,19 +22,13 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         else:
-            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_p ):
+            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
                 game_framework.pop_state()
 
 
 def draw():
     update_canvas()
     image.draw(480, 300, 300, 300)
-
-
-
-
-
-
 
 
 def update():
@@ -46,9 +41,3 @@ def pause():
 
 def resume():
     pass
-
-
-
-
-
-

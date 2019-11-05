@@ -13,7 +13,7 @@ def enter():
 
 def exit():
     global image
-    del(image)
+    del (image)
 
 
 def handle_events():
@@ -35,10 +35,6 @@ def draw():
     update_canvas()
 
 
-
-
-
-
 def update():
     pass
 
@@ -49,9 +45,3 @@ def pause():
 
 def resume():
     pass
-
-
-
-
-
-

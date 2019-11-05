@@ -10,27 +10,28 @@ from project.game_code.object_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.walker import Walker
+from project.game_code.object_code.drunk import Drunk
 from project.game_code.stage_code.background import Background
-
 
 name = "main_state"
 
 dragon = None
 background = None
 walker = None
+drunk = None
 
 
 def enter():
-    global dragon, background, walker
+    global dragon, background, walker, drunk
     dragon = Dragon()
     background = Background()
     walker = Walker(690, 50)
+    drunk = Drunk()
 
     game_world.add_object(background, 0)
     game_world.add_object(dragon, 1)
     game_world.add_object(walker, 2)
-
-
+    game_world.add_object(drunk, 3)
 
 
 def exit():
@@ -51,26 +52,20 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-                game_framework.quit()
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
             game_framework.push_state(pause_state)
         else:
             dragon.handle_event(event)
 
 
-
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+
 
 def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
     update_canvas()
-
-
-
-
-
-

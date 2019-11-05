@@ -14,7 +14,7 @@ def enter():
 
 def exit():
     global image
-    del(image)
+    del image
 
 
 def update():
@@ -32,7 +32,6 @@ def draw():
     clear_canvas()
     image.draw(480, 300, 960, 600)
     update_canvas()
-
 
 
 def handle_events():
