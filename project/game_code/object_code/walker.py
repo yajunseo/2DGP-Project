@@ -1,8 +1,9 @@
 from pico2d import *
 import random
+from project.game_code.state_code import main_state
+from project.game_code.object_code import game_world
 
-
-class Monster1:
+class Walker:
     image = None
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -10,6 +11,7 @@ class Monster1:
         self.frame = random.randint(0, 12)
         self.dir = 1
         self.frame_speed_control = 0
+        self.is_hit = False
         if self.image == None:
             self.image = load_image('sprite\\Enemy\\walker.png')
 
@@ -30,6 +32,7 @@ class Monster1:
             self.dir = -1
             self.x -= 1
             self.x = clamp(70, self.x, 960 - 70)
+
 
     def draw(self):
         if self.dir == 1:

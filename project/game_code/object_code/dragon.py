@@ -1,7 +1,6 @@
 from pico2d import *
-from bubble import Bubble
-
-import game_world
+from project.game_code.object_code.bubble import Bubble
+from project.game_code.object_code import game_world
 
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, CTRL, SPACE = range(6)
 

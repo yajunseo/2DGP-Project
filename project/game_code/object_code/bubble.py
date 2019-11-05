@@ -1,5 +1,5 @@
 from pico2d import *
-import game_world
+from project.game_code.object_code import game_world
 
 class Bubble:
     image = None

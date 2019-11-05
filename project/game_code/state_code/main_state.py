@@ -4,35 +4,32 @@ import os
 
 from pico2d import *
 
-import game_framework
-import game_world
-import pause_state
+from project.game_code.state_code import game_framework
+from project.game_code.state_code import pause_state
+from project.game_code.object_code import game_world
 
-from dragon import Dragon
-from background import Background
-from monster1 import Monster1
+from project.game_code.object_code.dragon import Dragon
+from project.game_code.object_code.walker import Walker
+from project.game_code.stage_code.background import Background
 
 
 name = "main_state"
 
 dragon = None
 background = None
-monster1 = None
-monster2 = None
-monster3 = None
+walker = None
+
 
 def enter():
-    global dragon, background, monster1, monster2, monster3
+    global dragon, background, walker
     dragon = Dragon()
     background = Background()
-    monster1 = Monster1(690, 240)
-    monster2 = Monster1(220, 240)
-    monster3 = Monster1(400, 410)
+    walker = Walker(690, 50)
+
     game_world.add_object(background, 0)
     game_world.add_object(dragon, 1)
-    game_world.add_object(monster1, 2)
-    game_world.add_object(monster2, 3)
-    game_world.add_object(monster3, 4)
+    game_world.add_object(walker, 2)
+
 
 
 
