@@ -11,9 +11,9 @@ from project.game_code.object_code import game_world
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.walker import Walker
 from project.game_code.object_code.drunk import Drunk
-from project.game_code.stage_code.background import Background
+from project.game_code.stage_code.blue_background import Background
 
-name = "main_state"
+name = "first_main_state"
 
 dragon = None
 background = None

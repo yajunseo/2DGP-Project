@@ -1,6 +1,6 @@
 from pico2d import *
 import random
-from project.game_code.state_code import first_main_state
+from project.game_code.state_code import second_main_state
 from project.game_code.object_code import game_world
 
 
@@ -15,7 +15,7 @@ class Walker:
         self.frame_speed_control = 0
         self.is_hit = False
         if self.image is None:
-            self.image = load_image('sprite\\Enemy\\walker.png')
+            self.image = load_image('sprite\\Enemy\\tadpole.png')
 
     def update(self):
         self.frame_speed_control += 1

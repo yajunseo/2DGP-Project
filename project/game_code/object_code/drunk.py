@@ -1,7 +1,7 @@
 from pico2d import *
 import random
 import math
-from project.game_code.state_code import main_state
+from project.game_code.state_code import first_main_state
 from project.game_code.object_code import game_world
 from project.game_code.object_code.bottle import Bottle
 
