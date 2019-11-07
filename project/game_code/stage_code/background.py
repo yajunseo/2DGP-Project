@@ -3,7 +3,7 @@ from pico2d import *
 
 class Background:
     def __init__(self):
-        self.image = load_image('sprite\\map1-1.png')
+        self.image = load_image('sprite\\map\\map1-1.png')
 
     def update(self):
         pass

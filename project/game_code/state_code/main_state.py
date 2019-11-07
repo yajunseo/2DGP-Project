@@ -17,20 +17,22 @@ name = "main_state"
 
 dragon = None
 background = None
-walker = None
+walkers = None
 drunk = None
 
 
 def enter():
-    global dragon, background, walker, drunk
+    global dragon, background, walkers, drunk
     dragon = Dragon()
     background = Background()
-    walker = Walker(690, 50)
+    walkers = [Walker(230, 150, 1), Walker(740, 150, -1), Walker(500, 410, -1),
+               Walker(510, 410, 1), Walker(320, 240, -1), Walker(650, 240, 1),
+               Walker(230, 330, 1), Walker(740, 330, -1)]
     drunk = Drunk()
 
     game_world.add_object(background, 0)
     game_world.add_object(dragon, 1)
-    game_world.add_object(walker, 2)
+    game_world.add_objects(walkers, 2)
     game_world.add_object(drunk, 3)
 
 

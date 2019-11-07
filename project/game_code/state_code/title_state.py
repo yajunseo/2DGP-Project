@@ -8,7 +8,7 @@ image = None
 
 def enter():
     global image
-    image = load_image('sprite\\title.png')
+    image = load_image('sprite\\state\\title.png')
 
 
 def exit():

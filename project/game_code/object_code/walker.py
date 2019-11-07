@@ -7,11 +7,11 @@ from project.game_code.object_code import game_world
 class Walker:
     image = None
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, dir):
         self.x, self.y = x, y
-        self.turn = random.randint(-100, 100)
+        self.turn = 0
         self.frame = random.randint(0, 12)
-        self.dir = 1
+        self.dir = dir
         self.frame_speed_control = 0
         self.is_hit = False
         if self.image is None:
@@ -24,16 +24,20 @@ class Walker:
             self.frame_speed_control = 0
 
         self.turn += 1
-        if self.turn >= 0:
-            self.dir = 1
-            self.x += 1
-            self.x = clamp(70, self.x, 960 - 70)
-            if self.turn >= 100:
-                self.turn = - 100
-        if self.turn < 0:
-            self.dir = -1
-            self.x -= 1
-            self.x = clamp(70, self.x, 960 - 70)
+        if self.dir == 1:
+            if self.turn <= 300:
+                self.x += 0.5
+            else:
+                self.dir = -1
+                self.turn = 0
+
+        else:
+            if self.turn <= 300:
+                self.x -= 0.5
+            else:
+                self.dir = 1
+                self.turn = 0
+        self.x = clamp(70, self.x, 960 - 70)
 
     def draw(self):
         if self.is_hit:
