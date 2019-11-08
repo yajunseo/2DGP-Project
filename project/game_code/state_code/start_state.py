@@ -1,4 +1,5 @@
 from pico2d import *
+import time
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import title_state
 
@@ -19,12 +20,12 @@ def exit():
 
 def update():
     global logo_time
+    logo_time = get_time()
 
-    if logo_time >1.0:
+    if logo_time > 2.0:
         logo_time = 0
         game_framework.change_state(title_state)
     delay(0.01)
-    logo_time += 0.01
 
 
 def draw():
@@ -43,7 +44,3 @@ def pause(): pass
 
 
 def resume(): pass
-
-
-
-

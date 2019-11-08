@@ -1,6 +1,7 @@
 from pico2d import *
 from project.game_code.object_code.bubble import Bubble
 from project.game_code.object_code import game_world
+from project.game_code.state_code import game_framework
 
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, CTRL, SPACE = range(6)
 
@@ -13,6 +14,16 @@ key_event_table = {
     (SDL_KEYDOWN, SDLK_SPACE): SPACE
 }
 
+PIXEL_PER_METER = (10.0 / 0.3)
+RUN_SPEED_KMPH = 30.0
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 4
+
 
 class IdleState:
     @staticmethod
@@ -22,13 +33,13 @@ class IdleState:
                 Dragon.is_jump = True
                 Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
-            Dragon.velocity += 1
+            Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
-            Dragon.velocity -= 1
+            Dragon.velocity -= RUN_SPEED_PPS
         elif event == RIGHT_UP:
-            Dragon.velocity -= 1
+            Dragon.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
-            Dragon.velocity += 1
+            Dragon.velocity += RUN_SPEED_PPS
         if event == CTRL:
             Dragon.is_attack = True
 
@@ -39,21 +50,16 @@ class IdleState:
 
     @staticmethod
     def do(Dragon):
-        Dragon.frame_speed_control += 1
-
-        if Dragon.frame_speed_control > 50:
-            Dragon.frame = (Dragon.frame + 1) % 16
-            Dragon.frame_speed_control = 0
-
+        Dragon.frame = (Dragon.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 16
         if Dragon.is_jump:
             if not Dragon.is_jump_high:
-                Dragon.y += 1
-                if Dragon.y == Dragon.jump_y:
+                Dragon.y += RUN_SPEED_PPS * game_framework.frame_time
+                if Dragon.y >= Dragon.jump_y:
                     Dragon.is_jump_high = True
             elif Dragon.is_jump_high:
-                if Dragon.y != Dragon.temp_y:
-                    Dragon.y -= 1
-                elif Dragon.y == Dragon.temp_y:
+                if Dragon.y > Dragon.temp_y:
+                    Dragon.y -= RUN_SPEED_PPS * game_framework.frame_time
+                else:
                     Dragon.is_jump = False
                     Dragon.is_jump_high = False
 
@@ -66,24 +72,24 @@ class IdleState:
     @staticmethod
     def draw(Dragon):
         if Dragon.is_attack:
-            if Dragon.dir == 1:
-                Dragon.image.clip_draw(Dragon.frame * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
+            if Dragon.dir > 0:
+                Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
-                Dragon.image.clip_draw(Dragon.frame * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
 
         else:
             if not Dragon.is_jump:
-                if Dragon.dir == 1:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 32, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                if Dragon.dir > 0:
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 32, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 48, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 48, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
             elif Dragon.is_jump:
-                if Dragon.dir == 1:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                if Dragon.dir > 0:
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
 
 class RunState:
@@ -94,13 +100,13 @@ class RunState:
                 Dragon.is_jump = True
                 Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
-            Dragon.velocity += 1
+            Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
-            Dragon.velocity -= 1
+            Dragon.velocity -= RUN_SPEED_PPS
         elif event == RIGHT_UP:
-            Dragon.velocity -= 1
+            Dragon.velocity -= RUN_SPEED_PPS
         elif event == LEFT_UP:
-            Dragon.velocity += 1
+            Dragon.velocity += RUN_SPEED_PPS
         if event == CTRL:
             Dragon.is_attack = True
         Dragon.dir = Dragon.velocity
@@ -112,26 +118,20 @@ class RunState:
 
     @staticmethod
     def do(Dragon):
-        Dragon.frame_speed_control += 1
-        if Dragon.frame_speed_control > 50:
-            Dragon.frame = (Dragon.frame + 1) % 16
-            Dragon.frame_speed_control = 0
+        Dragon.frame = (Dragon.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 16
 
-        if not Dragon.is_jump:
-            Dragon.x += Dragon.velocity * 2
-        else:
-            Dragon.x += Dragon.velocity * 1
+        Dragon.x += Dragon.velocity * game_framework.frame_time
         Dragon.x = clamp(70, Dragon.x, 960 - 70)
 
         if Dragon.is_jump:
             if not Dragon.is_jump_high:
-                Dragon.y += 1
-                if Dragon.y == Dragon.jump_y:
+                Dragon.y += RUN_SPEED_PPS * game_framework.frame_time
+                if Dragon.y >= Dragon.jump_y:
                     Dragon.is_jump_high = True
             elif Dragon.is_jump_high:
-                if Dragon.y != Dragon.temp_y:
-                    Dragon.y -= 1
-                elif Dragon.y == Dragon.temp_y:
+                if Dragon.y > Dragon.temp_y:
+                    Dragon.y -= RUN_SPEED_PPS * game_framework.frame_time
+                else:
                     Dragon.is_jump = False
                     Dragon.is_jump_high = False
 
@@ -144,24 +144,23 @@ class RunState:
     @staticmethod
     def draw(Dragon):
         if Dragon.is_attack:
-            if Dragon.dir == 1:
-                Dragon.image.clip_draw(Dragon.frame * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
+            if Dragon.dir > 0:
+                Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
-                Dragon.image.clip_draw(Dragon.frame * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
-
+                Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
         else:
             if not Dragon.is_jump:
-                if Dragon.velocity == 1:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 128, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                if Dragon.velocity > 0:
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 128, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 144, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 144, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
             else:
-                if Dragon.dir == 1:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                if Dragon.dir > 0:
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(Dragon.frame * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
 
 next_state_table = {
@@ -192,7 +191,7 @@ class Dragon:
         self.is_hit = False
 
     def bubble(self):
-        bubble = Bubble(self.x, self.y, self.dir * 1.5)
+        bubble = Bubble(self.x, self.y, self.dir)
         game_world.add_object(bubble, 1)
 
     def update_state(self, state):
