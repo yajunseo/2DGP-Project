@@ -61,3 +61,6 @@ class Tadpole:
                 self.image.clip_draw(int(self.frame) * 16, 224, 16, 16, self.x, self.y, 50, 50)
             else:
                 self.image.clip_draw(int(self.frame) * 16, 240, 16, 16, self.x, self.y, 50, 50)
+
+    def get_bb(self):
+        return self.x - 25, self.y - 25, self.x + 25, self.y + 25

@@ -1,4 +1,5 @@
 from pico2d import *
+import time
 from project.game_code.object_code.bubble import Bubble
 from project.game_code.object_code import game_world
 from project.game_code.state_code import game_framework
@@ -31,7 +32,9 @@ class IdleState:
         if event == SPACE:
             if not Dragon.is_jump:
                 Dragon.is_jump = True
-                Dragon.jump_y = Dragon.y + 120
+                Dragon.is_fall = False
+                Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
+                Dragon.jump_y = Dragon.y + 130
         if event == RIGHT_DOWN:
             Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
@@ -52,22 +55,25 @@ class IdleState:
     def do(Dragon):
         Dragon.frame = (Dragon.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 16
         if Dragon.is_jump:
-            if not Dragon.is_jump_high:
-                Dragon.y += RUN_SPEED_PPS * game_framework.frame_time
+            if not Dragon.is_fall:
+                Dragon.y += Dragon.jump_speed
                 if Dragon.y >= Dragon.jump_y:
-                    Dragon.is_jump_high = True
-            elif Dragon.is_jump_high:
-                if Dragon.y > Dragon.temp_y:
-                    Dragon.y -= RUN_SPEED_PPS * game_framework.frame_time
-                else:
-                    Dragon.is_jump = False
-                    Dragon.is_jump_high = False
+                    Dragon.is_fall = True
+            elif Dragon.is_fall:
+                Dragon.y -= Dragon.jump_speed
 
         if Dragon.is_attack:
             Dragon.attack_time += 1
             if Dragon.attack_time > 100:
                 Dragon.is_attack = 0
                 Dragon.attack_time = 0
+
+        if Dragon.is_hit:
+            Dragon.invincible_check_time = get_time() - Dragon.invincible_start_time
+            if Dragon.invincible_check_time > 0.5:
+                Dragon.is_hit = False
+
+
 
     @staticmethod
     def draw(Dragon):
@@ -98,7 +104,9 @@ class RunState:
         if event == SPACE:
             if not Dragon.is_jump:
                 Dragon.is_jump = True
-                Dragon.jump_y = Dragon.y + 120
+                Dragon.is_fall = False
+                Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
+                Dragon.jump_y = Dragon.y + 130
         if event == RIGHT_DOWN:
             Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
@@ -124,16 +132,12 @@ class RunState:
         Dragon.x = clamp(70, Dragon.x, 960 - 70)
 
         if Dragon.is_jump:
-            if not Dragon.is_jump_high:
-                Dragon.y += RUN_SPEED_PPS * game_framework.frame_time
+            if not Dragon.is_fall:
+                Dragon.y += Dragon.jump_speed
                 if Dragon.y >= Dragon.jump_y:
-                    Dragon.is_jump_high = True
-            elif Dragon.is_jump_high:
-                if Dragon.y > Dragon.temp_y:
-                    Dragon.y -= RUN_SPEED_PPS * game_framework.frame_time
-                else:
-                    Dragon.is_jump = False
-                    Dragon.is_jump_high = False
+                    Dragon.is_fall = True
+            elif Dragon.is_fall:
+                Dragon.y -= Dragon.jump_speed
 
         if Dragon.is_attack:
             Dragon.attack_time += 1
@@ -175,20 +179,23 @@ next_state_table = {
 class Dragon:
     def __init__(self):
         self.x, self.y = 480, 50
-        self.temp_y, self.jump_y = self.y, self.y
+        self.jump_y = 0
         self.image = load_image('sprite\\Character\\character.png')
         self.dir = 1
         self.velocity = 0
         self.frame = 0
-        self.frame_speed_control = 0
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
         self.is_attack = False
         self.attack_time = 0
         self.is_jump = False
-        self.is_jump_high = False
+        self.is_fall = False
+        self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
         self.is_hit = False
+        self.life = 3
+        self.invincible_start_time = 0
+        self.invincible_check_time = 0
 
     def bubble(self):
         bubble = Bubble(self.x, self.y, self.dir)
@@ -214,8 +221,23 @@ class Dragon:
 
     def draw(self):
         self.cur_state.draw(self)
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def get_bb(self):
+        return self.x - 25, self.y - 25, self.x + 25, self.y + 25
+
+    def stop(self):
+        self.jump_speed = 0
+        self.is_jump = False
+
+
+    def cancel_stop(self):
+        self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
+        self.is_jump = True
+
+

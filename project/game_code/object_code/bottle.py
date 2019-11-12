@@ -23,6 +23,7 @@ class Bottle:
         self.velocity = 0.5 * phase
 
     def draw(self):
+        draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 12 + 2, 0, 11, 14, self.x, self.y, 40, 40)
 
     def update(self):
@@ -33,3 +34,7 @@ class Bottle:
 
         if self.x < 0 or self.x > 960 or self.y < 0 or self.y > 550:
             game_world.remove_object(self)
+
+    def get_bb(self):
+        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+

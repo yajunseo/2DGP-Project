@@ -112,3 +112,7 @@ class Drunk:
     def bottle(self):
         bottle = Bottle(self.x, self.y, self.phase, self.bottle_number)
         game_world.add_object(bottle, 1)
+
+    def get_bb(self):
+        return self.x - 100, self.y - 100, self.x + 100, self.y + 100
+

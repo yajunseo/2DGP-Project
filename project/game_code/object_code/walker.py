@@ -53,6 +53,8 @@ class Walker:
         self.x = clamp(70, self.x, 960 - 70)
 
     def draw(self):
+        draw_rectangle(*self.get_bb())
+
         if self.is_hit:
             self.image.clip_draw(int(self.frame) * 16, 96, 16, 16, self.x, self.y, 50, 50)
 
@@ -61,3 +63,7 @@ class Walker:
                 self.image.clip_draw(int(self.frame) * 16, 224, 16, 16, self.x, self.y, 50, 50)
             else:
                 self.image.clip_draw(int(self.frame) * 16, 240, 16, 16, self.x, self.y, 50, 50)
+
+    def get_bb(self):
+        return self.x - 25, self.y - 25, self.x + 25, self.y + 25
+

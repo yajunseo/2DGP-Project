@@ -21,13 +21,33 @@ walkers = None
 drunk = None
 
 
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+    return True
+
+
+def bottom_collide(a, b, n):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    i = b.get_bb()
+    for j in range(n):
+        if left_a <= i[j][2] and right_a >= i[j][0]:
+            if i[j][3] == bottom_a:
+                return True
+    return False
+
+
 def enter():
     global dragon, background, walkers, drunk
     dragon = Dragon()
     background = Background()
-    walkers = [Walker(230, 150, 1), Walker(740, 150, -1), Walker(500, 410, -1),
+    walkers = [Walker(230, 155, 1), Walker(740, 155, -1), Walker(500, 410, -1),
                Walker(510, 410, 1), Walker(320, 240, -1), Walker(650, 240, 1),
-               Walker(230, 330, 1), Walker(740, 330, -1)]
+               Walker(230, 325, 1), Walker(740, 325, -1)]
     drunk = Drunk()
 
     game_world.add_object(background, 0)
@@ -64,6 +84,21 @@ def handle_events():
 def update():
     for game_object in game_world.all_objects():
         game_object.update()
+
+    if dragon.is_fall:
+        if bottom_collide(dragon, background, 8):
+            dragon.stop()
+        else:
+            if not bottom_collide(dragon, background, 8):
+                dragon.cancel_stop()
+
+
+    for walker in walkers:
+        if collide(dragon, walker):
+            if not dragon.is_hit:
+                dragon.life -= 1
+                dragon.is_hit = True
+                dragon.invincible_start_time = get_time()
 
 
 def draw():

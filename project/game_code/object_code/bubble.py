@@ -34,6 +34,8 @@ class Bubble:
     def draw(self):
         if 80 < self.x < 880:
             self.image.clip_draw(int(self.frame) * 16, 224, 13, 13, self.x, self.y, 40, 40)
+            draw_rectangle(*self.get_bb())
+
         else:
             self.image.clip_draw(0, 192, 14, 16, self.x, self.y, 50, 50)
 
@@ -57,3 +59,6 @@ class Bubble:
 
         if self.check_current_time >= 8:
             game_world.remove_object(self)
+
+    def get_bb(self):
+        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
