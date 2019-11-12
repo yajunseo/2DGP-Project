@@ -36,7 +36,7 @@ def bottom_collide(a, b, n):
     i = b.get_bb()
     for j in range(n):
         if left_a <= i[j][2] and right_a >= i[j][0]:
-            if i[j][3] == bottom_a:
+            if i[j][3] + 1 >= bottom_a >= i[j][3] - 1:
                 return True
     return False
 

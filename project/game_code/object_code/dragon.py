@@ -34,7 +34,7 @@ class IdleState:
                 Dragon.is_jump = True
                 Dragon.is_fall = False
                 Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
-                Dragon.jump_y = Dragon.y + 130
+                Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
             Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
@@ -106,7 +106,7 @@ class RunState:
                 Dragon.is_jump = True
                 Dragon.is_fall = False
                 Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
-                Dragon.jump_y = Dragon.y + 130
+                Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
             Dragon.velocity += RUN_SPEED_PPS
         elif event == LEFT_DOWN:
