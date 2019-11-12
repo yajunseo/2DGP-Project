@@ -2,13 +2,13 @@ from pico2d import *
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import first_main_state
 
-name = "PauseState"
+name = "GameOverState"
 image = None
 
 
 def enter():
     global image
-    image = load_image('sprite\\state\\Game_pause.png')
+    image = load_image('sprite\\state\\game-over.png')
 
 
 def exit():
@@ -22,13 +22,13 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         else:
-            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
+            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 game_framework.pop_state()
 
 
 def draw():
     update_canvas()
-    image.draw(480, 300, 300, 300)
+    image.draw(4480, 300, 960, 600)
 
 
 def update():

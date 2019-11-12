@@ -6,6 +6,7 @@ from pico2d import *
 
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import pause_state
+from project.game_code.state_code import game_over_state
 from project.game_code.object_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
@@ -51,8 +52,8 @@ def enter():
     drunk = Drunk()
 
     game_world.add_object(background, 0)
-    game_world.add_object(dragon, 1)
-    game_world.add_objects(walkers, 2)
+    game_world.add_objects(walkers, 1)
+    game_world.add_object(dragon, 2)
     game_world.add_object(drunk, 3)
 
 
@@ -91,7 +92,6 @@ def update():
         else:
             if not bottom_collide(dragon, background, 8):
                 dragon.cancel_stop()
-
 
     for walker in walkers:
         if collide(dragon, walker):

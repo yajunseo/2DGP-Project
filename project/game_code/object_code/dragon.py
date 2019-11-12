@@ -77,25 +77,32 @@ class IdleState:
 
     @staticmethod
     def draw(Dragon):
-        if Dragon.is_attack:
+        if Dragon.is_hit:
             if Dragon.dir > 0:
-                Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                Dragon.image.clip_draw(0, 96, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
-                Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
-
+                Dragon.image.clip_draw(0, 112, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
         else:
-            if not Dragon.is_jump:
+            if Dragon.is_attack:
                 if Dragon.dir > 0:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 32, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 48, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
-            elif Dragon.is_jump:
-                if Dragon.dir > 0:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
-                else:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
+
+            else:
+                if not Dragon.is_jump:
+                    if Dragon.dir > 0:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 32, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    else:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 48, 16, 16, Dragon.x, Dragon.y, 50, 50)
+
+                elif Dragon.is_jump:
+                    if Dragon.dir > 0:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    else:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
 
 class RunState:
@@ -145,26 +152,37 @@ class RunState:
                 Dragon.is_attack = False
                 Dragon.attack_time = 0
 
+        if Dragon.is_hit:
+            Dragon.invincible_check_time = get_time() - Dragon.invincible_start_time
+            if Dragon.invincible_check_time > 0.5:
+                Dragon.is_hit = False
+
     @staticmethod
     def draw(Dragon):
-        if Dragon.is_attack:
+        if Dragon.is_hit:
             if Dragon.dir > 0:
-                Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                Dragon.image.clip_draw(0, 96, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
-                Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
-
+                Dragon.image.clip_draw(0, 112, 16, 16, Dragon.x, Dragon.y, 50, 50)
         else:
-            if not Dragon.is_jump:
-                if Dragon.velocity > 0:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 128, 16, 16, Dragon.x, Dragon.y, 50, 50)
+            if Dragon.is_attack:
+                if Dragon.dir > 0:
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 64, 16, 16, Dragon.x, Dragon.y, 50, 50)
                 else:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 144, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 80, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
             else:
-                if Dragon.dir > 0:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                if not Dragon.is_jump:
+                    if Dragon.velocity > 0:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 128, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    else:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 144, 16, 16, Dragon.x, Dragon.y, 50, 50)
+
                 else:
-                    Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    if Dragon.dir > 0:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 0, 16, 16, Dragon.x, Dragon.y, 50, 50)
+                    else:
+                        Dragon.image.clip_draw(int(Dragon.frame) * 16, 16, 16, 16, Dragon.x, Dragon.y, 50, 50)
 
 
 next_state_table = {
@@ -178,7 +196,7 @@ next_state_table = {
 
 class Dragon:
     def __init__(self):
-        self.x, self.y = 480, 50
+        self.x, self.y = 100, 50
         self.jump_y = 0
         self.image = load_image('sprite\\Character\\character.png')
         self.dir = 1
@@ -196,6 +214,7 @@ class Dragon:
         self.life = 3
         self.invincible_start_time = 0
         self.invincible_check_time = 0
+
 
     def bubble(self):
         bubble = Bubble(self.x, self.y, self.dir)
@@ -235,9 +254,10 @@ class Dragon:
         self.jump_speed = 0
         self.is_jump = False
 
-
     def cancel_stop(self):
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
         self.is_jump = True
+
+
 
 
