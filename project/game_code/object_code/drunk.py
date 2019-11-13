@@ -27,7 +27,6 @@ class Drunk:
         self.x, self.y = x, y
         self.frame = 0
         self.dir = 1
-        self.velocity = RUN_SPEED_PPS
         self.phase = 1
         self.is_hit = False
         self.image = load_image('sprite\\Enemy\\boss.png')
@@ -38,8 +37,12 @@ class Drunk:
         self.angle = 0
         self.speed_control = 0
         self.y_direction = 1
+        self.is_dead = False
+        self.is_lock = False
         self.check_attack_start_time = time.time()
         self.check_attack_end_time = 0
+        self.check_dead_motion_time = 0
+        self.check_dead_motion_end_time = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
@@ -51,63 +54,74 @@ class Drunk:
             self.phase = 2
         else:
             self.phase = 3
+        if not self.is_lock:
+            if self.check_attack_end_time > (1 - (self.phase * 0.1)):
+                self.bottle()
+                self.bottle_number = (self.bottle_number + 1) % 16
+                self.check_attack_start_time = time.time()
 
-        if self.check_attack_end_time > (1 - (self.phase * 0.1)):
-            self.bottle()
-            self.bottle_number = (self.bottle_number + 1) % 16
-            self.check_attack_start_time = time.time()
+            if self.phase == 1:
+                if self.dir == 1:
+                    self.x += RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x >= 660:
+                        self.dir = -1
+                else:
+                    self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x <= 300:
+                        self.dir = 1
 
-        if self.phase == 1:
-            if self.dir == 1:
-                self.x += self.velocity * game_framework.frame_time
-                if self.x >= 660:
+            elif self.phase == 2:
+                self.angle += 1
+                self.angle = self.angle % 360
+                self.x += self.radius * math.cos(self.angle * pi / 180)
+                self.y += self.radius * math.sin(self.angle * pi / 180)
+                if 90 <= self.angle <= 270:
                     self.dir = -1
-            else:
-                self.x -= self.velocity * game_framework.frame_time
-                if self.x <= 300:
+                else:
                     self.dir = 1
 
-        elif self.phase == 2:
-            self.angle += 1
-            self.angle = self.angle % 360
-            self.x += self.radius * math.cos(self.angle * pi / 180)
-            self.y += self.radius * math.sin(self.angle * pi / 180)
-            if 90 <= self.angle <= 270:
-                self.dir = -1
             else:
-                self.dir = 1
+                if self.dir == 1:
+                    self.x += RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x >= 870:
+                        self.dir = -1
+                else:
+                    self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x <= 90:
+                        self.dir = 1
 
-        else:
-            if self.dir == 1:
-                self.x += self.velocity * game_framework.frame_time
-                if self.x >= 870:
-                    self.dir = -1
-            else:
-                self.x -= self.velocity * game_framework.frame_time
-                if self.x <= 90:
-                    self.dir = 1
-
-            if self.y_direction == 1:
-                self.y += self.velocity * game_framework.frame_time
-                if self.y >= 470:
-                    self.y_direction = -1
-            else:
-                self.y -= self.velocity * game_framework.frame_time
-                if self.y <= 90:
-                    self.y_direction = 1
+                if self.y_direction == 1:
+                    self.y += RUN_SPEED_PPS * game_framework.frame_time
+                    if self.y >= 470:
+                        self.y_direction = -1
+                else:
+                    self.y -= RUN_SPEED_PPS * game_framework.frame_time
+                    if self.y <= 90:
+                        self.y_direction = 1
 
     def draw(self):
-        if self.phase == 3:
-            if self.dir > 0:
-                self.image.clip_draw(int(self.frame) * 64, 384, 64, 64, self.x, self.y, 200, 200)
+        if self.is_lock:
+            if not self.is_dead:
+                if dir > 0:
+                    self.image.clip_draw(int(self.frame) * 64, 192, 64, 64, self.x, self.y, 200, 200)
+                else:
+                    self.image.clip_draw(int(self.frame) * 64, 256, 64, 64, self.x, self.y, 200, 200)
+
             else:
-                self.image.clip_draw(int(self.frame) * 64, 448, 64, 64, self.x, self.y, 200, 200)
+                self.image.clip_draw(int(self.frame) * 64, 0, 64, 64, self.x, self.y, 200, 200)
 
         else:
-            if self.dir > 0:
-                self.image.clip_draw(int(self.frame) * 64, 512, 64, 64, self.x, self.y, 200, 200)
+            if self.phase == 3:
+                if self.dir > 0:
+                    self.image.clip_draw(int(self.frame) * 64, 384, 64, 64, self.x, self.y, 200, 200)
+                else:
+                    self.image.clip_draw(int(self.frame) * 64, 448, 64, 64, self.x, self.y, 200, 200)
+
             else:
-                self.image.clip_draw(int(self.frame) * 64, 576, 64, 64, self.x, self.y, 200, 200)
+                if self.dir > 0:
+                    self.image.clip_draw(int(self.frame) * 64, 512, 64, 64, self.x, self.y, 200, 200)
+                else:
+                    self.image.clip_draw(int(self.frame) * 64, 576, 64, 64, self.x, self.y, 200, 200)
 
     def bottle(self):
         bottle = Bottle(self.x, self.y, self.phase, self.bottle_number)

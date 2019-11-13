@@ -24,10 +24,13 @@ class Walker:
         self.turn = 0
         self.frame = random.randint(0, 12)
         self.dir = direction
-        self.velocity = RUN_SPEED_PPS
-        self.is_hit = False
+        self.is_beaten = False
+        self.is_dead = False
         self.check_start_time = time.time()
         self.check_turn_time = 0
+        self.check_dead_motion_time = 0
+        self.check_dead_motion_end_time = 0
+
         if self.image is None:
             self.image = load_image('sprite\\Enemy\\walker.png')
 
@@ -35,28 +38,36 @@ class Walker:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_turn_time = time.time() - self.check_start_time
 
-        if self.dir == 1:
-            if self.check_turn_time < 0.8:
-                self.x += self.velocity * game_framework.frame_time
+        if not self.is_beaten:
+            if self.dir == 1:
+                if self.check_turn_time < 0.8:
+                    self.x += RUN_SPEED_PPS * game_framework.frame_time
+                else:
+                    self.dir = -1
+                    self.turn = 0
+                    self.check_start_time = time.time()
+
             else:
-                self.dir = -1
-                self.turn = 0
-                self.check_start_time = time.time()
+                if self.check_turn_time < 0.8:
+                    self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                else:
+                    self.dir = 1
+                    self.turn = 0
+                    self.check_start_time = time.time()
+            self.x = clamp(70, self.x, 960 - 70)
 
         else:
-            if self.check_turn_time < 0.8:
-                self.x -= self.velocity * game_framework.frame_time
-            else:
-                self.dir = 1
-                self.turn = 0
-                self.check_start_time = time.time()
-        self.x = clamp(70, self.x, 960 - 70)
+            if self.is_dead:
+                self.check_dead_motion_end_time = get_time() - self.check_dead_motion_time
 
     def draw(self):
         draw_rectangle(*self.get_bb())
 
-        if self.is_hit:
-            self.image.clip_draw(int(self.frame) * 16, 96, 16, 16, self.x, self.y, 50, 50)
+        if self.is_beaten:
+            if not self.is_dead:
+                self.image.clip_draw(int(self.frame) * 16, 96, 16, 16, self.x, self.y, 50, 50)
+            else:
+                self.image.clip_draw(int(self.frame) * 16, 0, 16, 16, self.x, self.y, 50, 50)
 
         else:
             if self.dir == 1:
@@ -67,3 +78,8 @@ class Walker:
     def get_bb(self):
         return self.x - 25, self.y - 25, self.x + 25, self.y + 25
 
+    def bubble_lock(self):
+        self.is_beaten = True
+
+    def die(self):
+        self.is_dead = True

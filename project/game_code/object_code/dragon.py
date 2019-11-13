@@ -68,16 +68,16 @@ class IdleState:
                 Dragon.is_attack = 0
                 Dragon.attack_time = 0
 
-        if Dragon.is_hit:
+        if Dragon.is_beaten:
             Dragon.invincible_check_time = get_time() - Dragon.invincible_start_time
             if Dragon.invincible_check_time > 0.5:
-                Dragon.is_hit = False
+                Dragon.is_beaten = False
 
 
 
     @staticmethod
     def draw(Dragon):
-        if Dragon.is_hit:
+        if Dragon.is_beaten:
             if Dragon.dir > 0:
                 Dragon.image.clip_draw(0, 96, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
@@ -152,14 +152,14 @@ class RunState:
                 Dragon.is_attack = False
                 Dragon.attack_time = 0
 
-        if Dragon.is_hit:
+        if Dragon.is_beaten:
             Dragon.invincible_check_time = get_time() - Dragon.invincible_start_time
             if Dragon.invincible_check_time > 0.5:
-                Dragon.is_hit = False
+                Dragon.is_beaten = False
 
     @staticmethod
     def draw(Dragon):
-        if Dragon.is_hit:
+        if Dragon.is_beaten:
             if Dragon.dir > 0:
                 Dragon.image.clip_draw(0, 96, 16, 16, Dragon.x, Dragon.y, 50, 50)
             else:
@@ -210,7 +210,7 @@ class Dragon:
         self.is_jump = False
         self.is_fall = False
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
-        self.is_hit = False
+        self.is_beaten = False
         self.life = 3
         self.invincible_start_time = 0
         self.invincible_check_time = 0

@@ -1,6 +1,7 @@
 import random
 import json
 import os
+import time
 
 from pico2d import *
 
@@ -20,6 +21,8 @@ dragon = None
 background = None
 walkers = None
 drunk = None
+bubble = None
+walker_dead_count = 0
 
 
 def collide(a, b):
@@ -43,7 +46,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, walkers, drunk
+    global dragon, background, walkers, drunk, bubble
     dragon = Dragon()
     background = Background()
     walkers = [Walker(230, 155, 1), Walker(740, 155, -1), Walker(500, 410, -1),
@@ -54,7 +57,9 @@ def enter():
     game_world.add_object(background, 0)
     game_world.add_objects(walkers, 1)
     game_world.add_object(dragon, 2)
-    game_world.add_object(drunk, 3)
+
+
+#    game_world.add_object(drunk, 3)
 
 
 def exit():
@@ -83,6 +88,7 @@ def handle_events():
 
 
 def update():
+    global walker_dead_count
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -95,10 +101,46 @@ def update():
 
     for walker in walkers:
         if collide(dragon, walker):
-            if not dragon.is_hit:
+            if not walker.is_beaten:
+                if not dragon.is_beaten:
+                    dragon.life -= 1
+                    dragon.is_beaten = True
+                    dragon.invincible_start_time = get_time()
+            else:
+                walker.is_dead = True
+                walker.check_dead_motion_time = get_time()
+
+    for walker in walkers:
+        if walker.check_dead_motion_end_time > 1:
+            game_world.remove_object(walker)
+
+    if not game_world.objects[1]:
+        game_world.add_object(drunk, 1)
+        drunk.hp = 200
+
+# dragon -> bubble
+    for walker in walkers:
+        if collide(dragon, walker):
+            if not walker.is_beaten:
+                walker.is_beaten = True
+
+# dragon -> bubble
+    if collide(dragon, drunk):
+
+        if drunk.hp == 0:
+            if not drunk.is_lock:
+                drunk.is_lock = True
+
+    if collide(dragon, drunk):
+        if not drunk.is_lock:
+            if not dragon.is_beaten:
                 dragon.life -= 1
-                dragon.is_hit = True
+                dragon.is_beaten = True
                 dragon.invincible_start_time = get_time()
+        else:
+            drunk.is_dead = True
+            drunk.check_dead_motion_time = get_time()
+
 
 
 def draw():
