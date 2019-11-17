@@ -28,9 +28,8 @@ class Drunk:
         self.frame = 0
         self.dir = 1
         self.phase = 1
-        self.is_hit = False
         self.image = load_image('sprite\\Enemy\\boss.png')
-        self.hp = 200
+        self.hp = 10
         self.bottle_number = 0
         self.attack_timer = 0
         self.radius = 2
@@ -41,19 +40,19 @@ class Drunk:
         self.is_lock = False
         self.check_attack_start_time = time.time()
         self.check_attack_end_time = 0
-        self.check_dead_motion_time = 0
+        self.check_dead_motion_start_time = 0
         self.check_dead_motion_end_time = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-        self.check_attack_end_time = time.time() - self.check_attack_start_time
 
-        if self.hp >= 150:
+        if self.hp >= 5:
             self.phase = 1
-        elif self.hp >= 60:
+        elif self.hp >= 3:
             self.phase = 2
         else:
             self.phase = 3
+
         if not self.is_lock:
             if self.check_attack_end_time > (1 - (self.phase * 0.1)):
                 self.bottle()
@@ -99,13 +98,17 @@ class Drunk:
                     if self.y <= 90:
                         self.y_direction = 1
 
+        else:
+            if self.is_dead:
+                self.check_dead_motion_end_time = get_time() - self.check_dead_motion_start_time
+
     def draw(self):
         if self.is_lock:
             if not self.is_dead:
-                if dir > 0:
-                    self.image.clip_draw(int(self.frame) * 64, 192, 64, 64, self.x, self.y, 200, 200)
+                if self.dir > 0:
+                    self.image.clip_draw(int(self.frame) * 64, 128, 64, 64, self.x, self.y, 200, 200)
                 else:
-                    self.image.clip_draw(int(self.frame) * 64, 256, 64, 64, self.x, self.y, 200, 200)
+                    self.image.clip_draw(int(self.frame) * 64, 192, 64, 64, self.x, self.y, 200, 200)
 
             else:
                 self.image.clip_draw(int(self.frame) * 64, 0, 64, 64, self.x, self.y, 200, 200)

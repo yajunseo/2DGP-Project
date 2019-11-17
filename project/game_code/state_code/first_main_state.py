@@ -13,6 +13,7 @@ from project.game_code.object_code import game_world
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.walker import Walker
 from project.game_code.object_code.drunk import Drunk
+from project.game_code.object_code.bubble import Bubble
 from project.game_code.stage_code.blue_background import Background
 
 name = "first_main_state"
@@ -23,6 +24,7 @@ walkers = None
 drunk = None
 bubble = None
 walker_dead_count = 0
+is_drunk_spawn = False
 
 
 def collide(a, b):
@@ -46,7 +48,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, walkers, drunk, bubble
+    global dragon, background, walkers, drunk
     dragon = Dragon()
     background = Background()
     walkers = [Walker(230, 155, 1), Walker(740, 155, -1), Walker(500, 410, -1),
@@ -75,6 +77,7 @@ def resume():
 
 
 def handle_events():
+    global bubble
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -85,10 +88,17 @@ def handle_events():
             game_framework.push_state(pause_state)
         else:
             dragon.handle_event(event)
+            if event.type == SDL_KEYDOWN and event.key == SDLK_LCTRL:
+                dragon.check_attack_delay_end_time = get_time() - dragon.check_attack_delay_start_time
+                if dragon.check_attack_delay_end_time > 0.3:
+                    bubble = Bubble(dragon.x, dragon.y, dragon.dir)
+                    game_world.add_object(bubble, 4)
+                    dragon.check_attack_delay_end_time = 0
+                    dragon.check_attack_delay_start_time = get_time()
 
 
 def update():
-    global walker_dead_count
+    global walker_dead_count, is_drunk_spawn
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -107,40 +117,48 @@ def update():
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
-                walker.is_dead = True
-                walker.check_dead_motion_time = get_time()
+                if not walker.is_dead:
+                    walker.is_dead = True
+                    walker.check_dead_motion_time = get_time()
 
     for walker in walkers:
         if walker.check_dead_motion_end_time > 1:
             game_world.remove_object(walker)
 
     if not game_world.objects[1]:
-        game_world.add_object(drunk, 1)
-        drunk.hp = 200
+        if not is_drunk_spawn:
+            game_world.add_object(drunk, 3)
+            is_drunk_spawn = True
 
-# dragon -> bubble
-    for walker in walkers:
-        if collide(dragon, walker):
-            if not walker.is_beaten:
-                walker.is_beaten = True
+    if bubble:
+        for walker in walkers:
+            if collide(bubble, walker):
+                if not walker.is_beaten:
+                    game_world.remove_object(bubble)
+                    walker.is_beaten = True
 
-# dragon -> bubble
-    if collide(dragon, drunk):
+    # dragon -> bubble
+    if game_world.objects[3]:
+        if collide(bubble, drunk):
 
-        if drunk.hp == 0:
+            game_world.remove_object(bubble)
+            if drunk.hp <= 0:
+                if not drunk.is_lock:
+                    drunk.is_lock = True
+
+        if collide(dragon, drunk):
             if not drunk.is_lock:
-                drunk.is_lock = True
+                if not dragon.is_beaten:
+                    dragon.life -= 1
+                    dragon.is_beaten = True
+                    dragon.invincible_start_time = get_time()
+            else:
+                if not drunk.is_dead:
+                    drunk.check_dead_motion_start_time = get_time()
+                    drunk.is_dead = True
 
-    if collide(dragon, drunk):
-        if not drunk.is_lock:
-            if not dragon.is_beaten:
-                dragon.life -= 1
-                dragon.is_beaten = True
-                dragon.invincible_start_time = get_time()
-        else:
-            drunk.is_dead = True
-            drunk.check_dead_motion_time = get_time()
-
+        if drunk.check_dead_motion_end_time > 1:
+            game_world.remove_object(drunk)
 
 
 def draw():

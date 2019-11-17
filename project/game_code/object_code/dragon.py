@@ -48,8 +48,7 @@ class IdleState:
 
     @staticmethod
     def exit(Dragon, event):
-        if event == CTRL:
-            Dragon.bubble()
+        pass
 
     @staticmethod
     def do(Dragon):
@@ -128,8 +127,7 @@ class RunState:
 
     @staticmethod
     def exit(Dragon, event):
-        if event == CTRL:
-            Dragon.bubble()
+        pass
 
     @staticmethod
     def do(Dragon):
@@ -209,16 +207,13 @@ class Dragon:
         self.attack_time = 0
         self.is_jump = False
         self.is_fall = False
+        self.check_attack_delay_start_time = 0
+        self.check_attack_delay_end_time = 0
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
         self.is_beaten = False
         self.life = 3
         self.invincible_start_time = 0
         self.invincible_check_time = 0
-
-
-    def bubble(self):
-        bubble = Bubble(self.x, self.y, self.dir)
-        game_world.add_object(bubble, 1)
 
     def update_state(self, state):
         if len(self.event_que) > 0:
