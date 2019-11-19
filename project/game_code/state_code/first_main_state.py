@@ -24,8 +24,8 @@ background = None
 walkers = None
 drunk = None
 bubble = None
-walker_dead_count = 0
 is_drunk_spawn = False
+life = None
 
 
 def collide(a, b):
@@ -49,13 +49,14 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, walkers, drunk
+    global dragon, background, walkers, drunk, life
     dragon = Dragon()
     background = Background()
     walkers = [Walker(230, 155, 1), Walker(740, 155, -1), Walker(500, 410, -1),
                Walker(510, 410, 1), Walker(320, 240, -1), Walker(650, 240, 1),
                Walker(230, 325, 1), Walker(740, 325, -1)]
     drunk = Drunk()
+    life = load_image('sprite\\Character\\life.png')
 
     game_world.add_object(background, 0)
     game_world.add_objects(walkers, 1)
@@ -168,4 +169,7 @@ def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
+    for i in range(dragon.life):
+        life.draw(i*40+20, 580, 40, 40)
+
     update_canvas()
