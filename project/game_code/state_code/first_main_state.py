@@ -8,6 +8,7 @@ from pico2d import *
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import pause_state
 from project.game_code.state_code import game_over_state
+from project.game_code.state_code import store_state
 from project.game_code.object_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
@@ -140,9 +141,10 @@ def update():
     # dragon -> bubble
     if game_world.objects[3]:
         if collide(bubble, drunk):
-
             game_world.remove_object(bubble)
-            if drunk.hp <= 0:
+            if drunk.hp > 0:
+                drunk.hp -= 1
+            else:
                 if not drunk.is_lock:
                     drunk.is_lock = True
 
@@ -159,6 +161,7 @@ def update():
 
         if drunk.check_dead_motion_end_time > 1:
             game_world.remove_object(drunk)
+            game_framework.change_state(store_state)
 
 
 def draw():

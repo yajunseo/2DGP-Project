@@ -33,16 +33,16 @@ class IdleState:
             if not Dragon.is_jump:
                 Dragon.is_jump = True
                 Dragon.is_fall = False
-                Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
+                Dragon.jump_speed = Dragon.speed * game_framework.frame_time
                 Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
-            Dragon.velocity += RUN_SPEED_PPS
+            Dragon.velocity += Dragon.speed
         elif event == LEFT_DOWN:
-            Dragon.velocity -= RUN_SPEED_PPS
+            Dragon.velocity -= Dragon.speed
         elif event == RIGHT_UP:
-            Dragon.velocity -= RUN_SPEED_PPS
+            Dragon.velocity -= Dragon.speed
         elif event == LEFT_UP:
-            Dragon.velocity += RUN_SPEED_PPS
+            Dragon.velocity += Dragon.speed
         if event == CTRL:
             Dragon.is_attack = True
 
@@ -111,16 +111,16 @@ class RunState:
             if not Dragon.is_jump:
                 Dragon.is_jump = True
                 Dragon.is_fall = False
-                Dragon.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
+                Dragon.jump_speed = Dragon.speed * game_framework.frame_time
                 Dragon.jump_y = Dragon.y + 120
         if event == RIGHT_DOWN:
-            Dragon.velocity += RUN_SPEED_PPS
+            Dragon.velocity += Dragon.speed
         elif event == LEFT_DOWN:
-            Dragon.velocity -= RUN_SPEED_PPS
+            Dragon.velocity -= Dragon.speed
         elif event == RIGHT_UP:
-            Dragon.velocity -= RUN_SPEED_PPS
+            Dragon.velocity -= Dragon.speed
         elif event == LEFT_UP:
-            Dragon.velocity += RUN_SPEED_PPS
+            Dragon.velocity += Dragon.speed
         if event == CTRL:
             Dragon.is_attack = True
         Dragon.dir = Dragon.velocity
@@ -205,6 +205,7 @@ class Dragon:
         self.cur_state.enter(self, None)
         self.is_attack = False
         self.attack_time = 0
+        self.speed = RUN_SPEED_PPS
         self.is_jump = False
         self.is_fall = False
         self.check_attack_delay_start_time = 0
