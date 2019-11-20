@@ -9,7 +9,7 @@ from project.game_code.state_code import game_framework
 from project.game_code.state_code import pause_state
 from project.game_code.state_code import game_over_state
 from project.game_code.state_code import store_state
-from project.game_code.object_code import game_world
+from project.game_code.management_code import first_game_world
 
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.walker import Walker
@@ -58,16 +58,16 @@ def enter():
     drunk = Drunk()
     life = load_image('sprite\\Character\\life.png')
 
-    game_world.add_object(background, 0)
-    game_world.add_objects(walkers, 1)
-    game_world.add_object(dragon, 2)
+    first_game_world.add_object(background, 0)
+    first_game_world.add_objects(walkers, 1)
+    first_game_world.add_object(dragon, 2)
 
 
 #    game_world.add_object(drunk, 3)
 
 
 def exit():
-    game_world.clear()
+    first_game_world.clear()
 
 
 def pause():
@@ -94,14 +94,14 @@ def handle_events():
                 dragon.check_attack_delay_end_time = get_time() - dragon.check_attack_delay_start_time
                 if dragon.check_attack_delay_end_time > 0.3:
                     bubble = Bubble(dragon.x, dragon.y, dragon.dir)
-                    game_world.add_object(bubble, 4)
+                    first_game_world.add_object(bubble, 4)
                     dragon.check_attack_delay_end_time = 0
                     dragon.check_attack_delay_start_time = get_time()
 
 
 def update():
     global walker_dead_count, is_drunk_spawn
-    for game_object in game_world.all_objects():
+    for game_object in first_game_world.all_objects():
         game_object.update()
 
     if dragon.is_fall:
@@ -125,24 +125,24 @@ def update():
 
     for walker in walkers:
         if walker.check_dead_motion_end_time > 1:
-            game_world.remove_object(walker)
+            first_game_world.remove_object(walker)
 
-    if not game_world.objects[1]:
+    if not first_game_world.objects[1]:
         if not is_drunk_spawn:
-            game_world.add_object(drunk, 3)
+            first_game_world.add_object(drunk, 3)
             is_drunk_spawn = True
 
     if bubble:
         for walker in walkers:
             if collide(bubble, walker):
                 if not walker.is_beaten:
-                    game_world.remove_object(bubble)
+                    first_game_world.remove_object(bubble)
                     walker.is_beaten = True
 
     # dragon -> bubble
-    if game_world.objects[3]:
+    if first_game_world.objects[3]:
         if collide(bubble, drunk):
-            game_world.remove_object(bubble)
+            first_game_world.remove_object(bubble)
             if drunk.hp > 0:
                 drunk.hp -= 1
             else:
@@ -161,13 +161,13 @@ def update():
                     drunk.is_dead = True
 
         if drunk.check_dead_motion_end_time > 1:
-            game_world.remove_object(drunk)
+            first_game_world.remove_object(drunk)
             game_framework.change_state(store_state)
 
 
 def draw():
     clear_canvas()
-    for game_object in game_world.all_objects():
+    for game_object in first_game_world.all_objects():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)

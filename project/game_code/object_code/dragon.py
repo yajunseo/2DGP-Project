@@ -1,7 +1,8 @@
 from pico2d import *
 import time
 from project.game_code.object_code.bubble import Bubble
-from project.game_code.object_code import game_world
+from project.game_code.management_code import first_game_world
+from project.game_code.management_code import second_game_world
 from project.game_code.state_code import game_framework
 
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, CTRL, SPACE = range(6)

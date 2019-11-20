@@ -2,7 +2,7 @@ from pico2d import *
 import random
 import time
 from project.game_code.state_code import first_main_state
-from project.game_code.object_code import game_world
+from project.game_code.management_code import first_game_world
 from project.game_code.state_code import game_framework
 
 PIXEL_PER_METER = (10.0 / 0.3)

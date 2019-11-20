@@ -3,7 +3,7 @@ import random
 import math
 import time
 from project.game_code.state_code import first_main_state
-from project.game_code.object_code import game_world
+from project.game_code.management_code import first_game_world
 from project.game_code.object_code.bottle import Bottle
 from project.game_code.state_code import game_framework
 

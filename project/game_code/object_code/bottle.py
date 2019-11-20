@@ -1,7 +1,7 @@
 from pico2d import *
 import time
 from math import sin, cos
-from project.game_code.object_code import game_world
+from project.game_code.management_code import first_game_world
 from project.game_code.state_code import game_framework
 
 
