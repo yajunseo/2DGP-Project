@@ -3,13 +3,13 @@ from project.game_code.state_code import game_framework
 from project.game_code.state_code import first_main_state
 from project.game_code.state_code import second_main_state
 
-name = "TitleState"
+name = "EndState"
 image = None
 
 
 def enter():
     global image
-    image = load_image('sprite\\state\\title.png')
+    image = load_image('sprite\\state\\end.png')
 
 
 def exit():
@@ -26,8 +26,6 @@ def handle_events():
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
 
-            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                game_framework.change_state(first_main_state)
 
 
 def draw():
