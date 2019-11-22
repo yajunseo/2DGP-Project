@@ -17,6 +17,7 @@ from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.tadpole import Tadpole
 from project.game_code.object_code.drunk import Drunk
 from project.game_code.object_code.bubble import Bubble
+from project.game_code.object_code.bottle import Bottle
 from project.game_code.stage_code.pink_background import Background
 
 name = "second_main_state"
@@ -52,7 +53,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, tadpoles, drunk, life, font, gold
+    global dragon, background, tadpoles, drunk, life, font, gold, bottle
     dragon = Dragon()
     dragon.life = store_state.get_life()
     background = Background()
@@ -104,7 +105,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn
+    global is_drunk_spawn, bottle
     for game_object in second_game_world.all_objects():
         game_object.update()
 
@@ -137,9 +138,9 @@ def update():
             second_game_world.add_object(drunk, 3)
             is_drunk_spawn = True
 
-    if first_game_world.objects[4]:
+    if second_game_world.objects[4]:
         for tadpole in tadpoles:
-            for i in first_game_world.objects[4]:
+            for i in second_game_world.objects[4]:
                 if collide(i, tadpole):
                     if not tadpole.is_beaten:
                         second_game_world.remove_object(i)
@@ -157,6 +158,15 @@ def update():
                     else:
                         if not drunk.is_lock:
                             drunk.is_lock = True
+
+        if not drunk.is_lock:
+            print('%f' % drunk.check_attack_end_time)
+            if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
+                bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
+                print('1')
+                second_game_world.add_object(bottle, 5)
+                drunk.bottle_number = (drunk.bottle_number + 1) % 16
+                drunk.check_attack_start_time = get_time()
 
         if collide(dragon, drunk):
             if not drunk.is_lock:

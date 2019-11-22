@@ -32,8 +32,6 @@ class Bottle:
         self.x += math.sin(self.dir * pi / 180)
         self.y += math.cos(self.dir * pi / 180)
 
-        if self.x < 0 or self.x > 960 or self.y < 0 or self.y > 550:
-            game_world.remove_object(self)
 
     def get_bb(self):
         return self.x - 20, self.y - 20, self.x + 20, self.y + 20
