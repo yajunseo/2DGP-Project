@@ -29,19 +29,22 @@ class Drunk:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\boss.png')
-        self.hp = 10
+        self.hp = 20
         self.bottle_number = 0
         self.attack_timer = 0
         self.radius = 2
         self.angle = 0
         self.speed_control = 0
         self.y_direction = 1
+        self.is_beaten = False
         self.is_dead = False
         self.is_lock = False
         self.check_attack_start_time = time.time()
         self.check_attack_end_time = 0
         self.check_dead_motion_start_time = 0
         self.check_dead_motion_end_time = 0
+        self.invincible_start_time = 0
+        self.invincible_check_time = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8

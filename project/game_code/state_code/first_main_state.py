@@ -15,6 +15,7 @@ from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.walker import Walker
 from project.game_code.object_code.drunk import Drunk
 from project.game_code.object_code.bubble import Bubble
+from project.game_code.object_code.bottle import Bottle
 from project.game_code.stage_code.blue_background import Background
 
 name = "first_main_state"
@@ -24,9 +25,12 @@ background = None
 walkers = None
 drunk = None
 bubble = None
+bottle = None
 is_drunk_spawn = False
 life = None
-
+font = None
+gold = None
+damage = None
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -49,7 +53,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, walkers, drunk, life
+    global dragon, background, walkers, drunk, life, font, gold, damage
     dragon = Dragon()
     background = Background()
     walkers = [Walker(230, 155, 1), Walker(740, 155, -1), Walker(500, 410, -1),
@@ -57,6 +61,8 @@ def enter():
                Walker(230, 325, 1), Walker(740, 325, -1)]
     drunk = Drunk()
     life = load_image('sprite\\Character\\life.png')
+    font = load_font('ENCR10B.TTF', 32)
+    gold = dragon.gold
 
     first_game_world.add_object(background, 0)
     first_game_world.add_objects(walkers, 1)
@@ -100,7 +106,7 @@ def handle_events():
 
 
 def update():
-    global walker_dead_count, is_drunk_spawn
+    global is_drunk_spawn, gold, damage, bottle
     for game_object in first_game_world.all_objects():
         game_object.update()
 
@@ -121,6 +127,7 @@ def update():
             else:
                 if not walker.is_dead:
                     walker.is_dead = True
+                    dragon.gold += 100
                     walker.check_dead_motion_time = get_time()
 
     for walker in walkers:
@@ -132,22 +139,36 @@ def update():
             first_game_world.add_object(drunk, 3)
             is_drunk_spawn = True
 
-    if bubble:
+    if first_game_world.objects[4]:
         for walker in walkers:
-            if collide(bubble, walker):
-                if not walker.is_beaten:
-                    first_game_world.remove_object(bubble)
-                    walker.is_beaten = True
+            for i in first_game_world.objects[4]:
+                if collide(i, walker):
+                    if not walker.is_beaten:
+                        drunk.hp -= 1
+                        drunk.is_beaten = True
+                        first_game_world.remove_object(i)
+                        walker.is_beaten = True
 
     # dragon -> bubble
     if first_game_world.objects[3]:
-        if collide(bubble, drunk):
-            first_game_world.remove_object(bubble)
-            if drunk.hp > 0:
-                drunk.hp -= 1
-            else:
-                if not drunk.is_lock:
-                    drunk.is_lock = True
+        if first_game_world.objects[4]:
+            for i in first_game_world.objects[4]:
+                if collide(i, drunk):
+                    first_game_world.remove_object(i)
+                    if drunk.hp > 0:
+                        drunk.hp -= 1
+                        print('%d'%drunk.hp,300,300)
+                    else:
+                        if not drunk.is_lock:
+                            drunk.is_lock = True
+
+        if not drunk.is_lock:
+            if drunk.check_attack_end_time > (1 - (drunk.phase * 0.1)):
+                bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
+                first_game_world.add_object(bottle, 4)
+                drunk.bottle_number = (drunk.bottle_number + 1) % 16
+                drunk.check_attack_start_time = time.time()
+
 
         if collide(dragon, drunk):
             if not drunk.is_lock:
@@ -157,6 +178,7 @@ def update():
                     dragon.invincible_start_time = get_time()
             else:
                 if not drunk.is_dead:
+                    dragon.gold += 500
                     drunk.check_dead_motion_start_time = get_time()
                     drunk.is_dead = True
 
@@ -165,11 +187,15 @@ def update():
             game_framework.change_state(store_state)
 
 
+
 def draw():
+    global font, gold
     clear_canvas()
     for game_object in first_game_world.all_objects():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)
+    font.draw(850, 580, '%d' % dragon.gold, (255, 255, 255))
 
     update_canvas()
+

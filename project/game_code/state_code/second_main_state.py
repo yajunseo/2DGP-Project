@@ -10,6 +10,7 @@ from project.game_code.state_code import pause_state
 from project.game_code.state_code import game_over_state
 from project.game_code.state_code import store_state
 from project.game_code.state_code import end_state
+from project.game_code.state_code import first_main_state
 from project.game_code.management_code import second_game_world
 
 from project.game_code.object_code.dragon import Dragon
@@ -27,6 +28,7 @@ drunk = None
 bubble = None
 is_drunk_spawn = False
 life = None
+font = None
 
 
 def collide(a, b):
@@ -50,8 +52,9 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, tadpoles, drunk, life
+    global dragon, background, tadpoles, drunk, life, font, gold
     dragon = Dragon()
+    dragon.life = store_state.get_life()
     background = Background()
     tadpoles = [Tadpole(45, 157, 1),Tadpole(915, 157, -1), Tadpole(915, 373, -1),
                Tadpole(45, 373, 1), Tadpole(500, 157, -1),Tadpole(280, 373, 1),
@@ -62,7 +65,7 @@ def enter():
     second_game_world.add_object(background, 0)
     second_game_world.add_objects(tadpoles, 1)
     second_game_world.add_object(dragon, 2)
-
+    font = load_font('ENCR10B.TTF', 32)
 
 #    game_world.add_object(drunk, 3)
 
@@ -121,6 +124,7 @@ def update():
                     dragon.invincible_start_time = get_time()
             else:
                 if not tadpole.is_dead:
+                    first_main_state.dragon.gold += 100
                     tadpole.is_dead = True
                     tadpole.check_dead_motion_time = get_time()
 
@@ -133,22 +137,26 @@ def update():
             second_game_world.add_object(drunk, 3)
             is_drunk_spawn = True
 
-    if bubble:
+    if first_game_world.objects[4]:
         for tadpole in tadpoles:
-            if collide(bubble, tadpole):
-                if not tadpole.is_beaten:
-                    second_game_world.remove_object(bubble)
-                    tadpole.is_beaten = True
+            for i in first_game_world.objects[4]:
+                if collide(i, tadpole):
+                    if not tadpole.is_beaten:
+                        second_game_world.remove_object(i)
+                        tadpole.is_beaten = True
 
     # dragon -> bubble
     if second_game_world.objects[3]:
-        if collide(bubble, drunk):
-            second_game_world.remove_object(bubble)
-            if drunk.hp > 0:
-                drunk.hp -= 1
-            else:
-                if not drunk.is_lock:
-                    drunk.is_lock = True
+        if second_game_world.objects[4]:
+            for i in second_game_world.objects[4]:
+                if collide(i, drunk):
+                    second_game_world.remove_object(i)
+                    if drunk.hp > 0:
+                        drunk.hp -= 1
+                        print('%d' % drunk.hp, 300, 300)
+                    else:
+                        if not drunk.is_lock:
+                            drunk.is_lock = True
 
         if collide(dragon, drunk):
             if not drunk.is_lock:
@@ -158,6 +166,7 @@ def update():
                     dragon.invincible_start_time = get_time()
             else:
                 if not drunk.is_dead:
+                    first_main_state.dragon.gold += 500
                     drunk.check_dead_motion_start_time = get_time()
                     drunk.is_dead = True
 
@@ -167,10 +176,12 @@ def update():
 
 
 def draw():
+    global font, gold
     clear_canvas()
     for game_object in second_game_world.all_objects():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)
+    font.draw(850, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
 
     update_canvas()

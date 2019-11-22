@@ -207,6 +207,7 @@ class Dragon:
         self.is_attack = False
         self.attack_time = 0
         self.speed = RUN_SPEED_PPS
+        self.is_beaten = False
         self.is_jump = False
         self.is_fall = False
         self.check_attack_delay_start_time = 0
@@ -216,6 +217,7 @@ class Dragon:
         self.life = 3
         self.invincible_start_time = 0
         self.invincible_check_time = 0
+        self.gold = 0
 
     def update_state(self, state):
         if len(self.event_que) > 0:
