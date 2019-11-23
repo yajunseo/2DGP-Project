@@ -3,6 +3,7 @@ import time
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import title_state
 
+
 name = "StartState"
 image = None
 logo_time = 0.0

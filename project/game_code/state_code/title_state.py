@@ -5,11 +5,14 @@ from project.game_code.state_code import second_main_state
 
 name = "TitleState"
 image = None
-
+count = None
+font = None
 
 def enter():
-    global image
-    image = load_image('sprite\\state\\title.png')
+    global image, count, font
+    count = 0
+    image = load_image('sprite\\state\\title1.png')
+    font = load_font('font.TTF', 26)
 
 
 def exit():
@@ -31,8 +34,16 @@ def handle_events():
 
 
 def draw():
+    global count
     clear_canvas()
+    count += 1
     image.draw(480, 300, 960, 600)
+    if count <= 60:
+        font.draw(180, 190, 'press SPACEBAR to start', (255, 0, 0))
+    else:
+        font.draw(180, 190, 'press SPACEBAR to start', (255, 187, 100))
+        if count >= 120:
+            count = 0
     update_canvas()
 
 

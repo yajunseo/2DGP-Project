@@ -48,9 +48,9 @@ class Drunk:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         self.check_attack_end_time = get_time() - self.check_attack_start_time
-        if self.hp >= 5:
+        if self.hp >= 7:
             self.phase = 1
-        elif self.hp >= 3:
+        elif self.hp >= 4:
             self.phase = 2
         else:
             self.phase = 3

@@ -70,9 +70,7 @@ def enter():
     second_game_world.add_object(background, 0)
     second_game_world.add_objects(tadpoles, 1)
     second_game_world.add_object(dragon, 2)
-    font = load_font('ENCR10B.TTF', 32)
-
-#    game_world.add_object(drunk, 3)
+    font = load_font('font.TTF', 28)
 
 
 def exit():
@@ -124,7 +122,8 @@ def update():
         if collide(dragon, tadpole):
             if not tadpole.is_beaten:
                 if not dragon.is_beaten:
-                    dragon.life -= 1
+                    if dragon.life > 0:
+                        dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
@@ -172,7 +171,8 @@ def update():
         if collide(dragon, drunk):
             if not drunk.is_lock:
                 if not dragon.is_beaten:
-                    dragon.life -= 1
+                    if dragon.life > 0:
+                        dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
@@ -190,7 +190,8 @@ def update():
             for i in second_game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
-                        dragon.life -= 1
+                        if dragon.life > 0:
+                            dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()
                         second_game_world.remove_object(i)
@@ -206,6 +207,9 @@ def draw():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)
-    font.draw(850, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
-
+    font.draw(830, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
     update_canvas()
+
+
+def get_gold():
+    return first_main_state.dragon.gold

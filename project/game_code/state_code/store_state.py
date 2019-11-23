@@ -13,19 +13,21 @@ speed_up = None
 life_up = None
 font = None
 is_click = False
+life = None
 choose_button = 1
 item_count = 0
 speed_item_count = 0
 
 
 def enter():
-    global image, door_close, door_open, speed_up, life_up, font
+    global image, door_close, door_open, speed_up, life_up, font, life
     image = load_image('sprite\\state\\store.png')
     door_close = load_image('sprite\\state\\door_close.png')
     door_open = load_image('sprite\\state\\door_open.png')
     speed_up = load_image('sprite\\state\\attack_speed.png')
     life_up = load_image('sprite\\state\\1UP.png')
-    font = load_font('ENCR10B.TTF', 48)
+    font = load_font('font.TTF', 28)
+    life = load_image('sprite\\Character\\life.png')
 
 def exit():
     global image
@@ -68,9 +70,13 @@ def handle_events():
 
 
 def draw():
-    global choose_button, font
+    global choose_button, font, life
     clear_canvas()
     image.draw(480, 300, 960, 600)
+#    life.draw(40 + 20, 580, 40, 40)
+    for i in range(first_main_state.dragon.life):
+        life.draw(i * 40 + 20, 580, 40, 40)
+
     if choose_button == 1:
         life_up.draw(230, 430, 150, 150)
         speed_up.draw(480, 430, 70, 70)
@@ -85,7 +91,8 @@ def draw():
         life_up.draw(230, 430, 70, 70)
         speed_up.draw(480, 430, 70, 70)
         door_open.draw(730, 430, 150, 150)
-    font.draw(350, 560, 'SCORE %d' % first_main_state.dragon.gold, (255, 255, 255))
+    font.draw(830, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
+
     update_canvas()
 
 

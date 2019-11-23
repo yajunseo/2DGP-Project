@@ -61,7 +61,7 @@ def enter():
                Walker(230, 325, 1), Walker(740, 325, -1)]
     drunk = Drunk()
     life = load_image('sprite\\Character\\life.png')
-    font = load_font('ENCR10B.TTF', 32)
+    font = load_font('font.TTF', 28)
     gold = dragon.gold
 
     first_game_world.add_object(background, 0)
@@ -121,7 +121,8 @@ def update():
         if collide(dragon, walker):
             if not walker.is_beaten:
                 if not dragon.is_beaten:
-                    dragon.life -= 1
+                    if dragon.life > 0:
+                        dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
@@ -172,7 +173,8 @@ def update():
         if collide(dragon, drunk):
             if not drunk.is_lock:
                 if not dragon.is_beaten:
-                    dragon.life -= 1
+                    if dragon.life > 0:
+                        dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
@@ -190,7 +192,8 @@ def update():
             for i in first_game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
-                        dragon.life -= 1
+                        if dragon.life > 0:
+                            dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()
                         first_game_world.remove_object(i)
@@ -207,7 +210,7 @@ def draw():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)
-    font.draw(850, 580, '%d' % dragon.gold, (255, 255, 255))
+    font.draw(830, 580, '%d' % dragon.gold, (255, 255, 255))
 
     update_canvas()
 
