@@ -157,21 +157,17 @@ def update():
                     first_game_world.remove_object(i)
                     if drunk.hp > 0:
                         drunk.hp -= 1
-                        print('%d'%drunk.hp,300,300)
+
                     else:
                         if not drunk.is_lock:
                             drunk.is_lock = True
 
         if not drunk.is_lock:
-            print('%f' % drunk.check_attack_end_time)
             if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
                 bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
-                print('1')
                 first_game_world.add_object(bottle, 5)
                 drunk.bottle_number = (drunk.bottle_number + 1) % 16
                 drunk.check_attack_start_time = get_time()
-
-
 
         if collide(dragon, drunk):
             if not drunk.is_lock:
@@ -189,17 +185,18 @@ def update():
             first_game_world.remove_object(drunk)
             game_framework.change_state(store_state)
 
-
-#        for i in first_game_world.objects[5]:
-#            if collide(dragon, i):
-#                if not dragon.is_beaten:
-#                    dragon.life -= 1
-#                    dragon.is_beaten = True
-#                    dragon.invincible_start_time = get_time()
-#                    first_game_world.remove_object(i)
-#            else:
-#                if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
-#                    first_game_world.remove_object(i)
+    if not drunk.is_dead:
+        if bottle:
+            for i in first_game_world.objects[5]:
+                if collide(dragon, i):
+                    if not dragon.is_beaten:
+                        dragon.life -= 1
+                        dragon.is_beaten = True
+                        dragon.invincible_start_time = get_time()
+                        first_game_world.remove_object(i)
+                else:
+                    if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
+                        first_game_world.remove_object(i)
 
 
 

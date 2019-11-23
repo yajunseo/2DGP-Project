@@ -15,6 +15,7 @@ font = None
 is_click = False
 choose_button = 1
 item_count = 0
+speed_item_count = 0
 
 
 def enter():
@@ -22,7 +23,7 @@ def enter():
     image = load_image('sprite\\state\\store.png')
     door_close = load_image('sprite\\state\\door_close.png')
     door_open = load_image('sprite\\state\\door_open.png')
-    speed_up = load_image('sprite\\state\\shoe-512.png')
+    speed_up = load_image('sprite\\state\\attack_speed.png')
     life_up = load_image('sprite\\state\\1UP.png')
     font = load_font('ENCR10B.TTF', 48)
 
@@ -32,7 +33,7 @@ def exit():
 
 
 def handle_events():
-    global choose_button, item_count, is_click
+    global choose_button, item_count, is_click, speed_item_count
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -58,6 +59,7 @@ def handle_events():
                 elif choose_button == 2:
                     if first_main_state.dragon.gold >= 500:
                         item_count += 1
+                        speed_item_count += 1
                         is_click = True
                 else:
                     game_framework.change_state(second_main_state)
@@ -107,3 +109,6 @@ def resume():
 
 def get_life():
     return first_main_state.dragon.life
+
+def get_speed_item():
+    return speed_item_count

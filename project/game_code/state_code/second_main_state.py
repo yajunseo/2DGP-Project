@@ -3,6 +3,7 @@ import json
 import os
 import time
 
+
 from pico2d import *
 
 from project.game_code.state_code import game_framework
@@ -27,9 +28,11 @@ background = None
 tadpoles = None
 drunk = None
 bubble = None
+bottle = None
 is_drunk_spawn = False
 life = None
 font = None
+speed_item_count = None
 
 
 def collide(a, b):
@@ -53,7 +56,8 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, tadpoles, drunk, life, font, gold, bottle
+    global dragon, background, tadpoles, drunk, life, font, gold, bottle, speed_item_count
+    speed_item_count = store_state.get_speed_item()
     dragon = Dragon()
     dragon.life = store_state.get_life()
     background = Background()
@@ -84,7 +88,7 @@ def resume():
 
 
 def handle_events():
-    global bubble
+    global bubble, speed_item_count
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -97,7 +101,7 @@ def handle_events():
             dragon.handle_event(event)
             if event.type == SDL_KEYDOWN and event.key == SDLK_LCTRL:
                 dragon.check_attack_delay_end_time = get_time() - dragon.check_attack_delay_start_time
-                if dragon.check_attack_delay_end_time > 0.3:
+                if dragon.check_attack_delay_end_time > (0.3 - speed_item_count*0.1):
                     bubble = Bubble(dragon.x, dragon.y, dragon.dir)
                     second_game_world.add_object(bubble, 4)
                     dragon.check_attack_delay_end_time = 0
@@ -154,16 +158,13 @@ def update():
                     second_game_world.remove_object(i)
                     if drunk.hp > 0:
                         drunk.hp -= 1
-                        print('%d' % drunk.hp, 300, 300)
                     else:
                         if not drunk.is_lock:
                             drunk.is_lock = True
 
         if not drunk.is_lock:
-            print('%f' % drunk.check_attack_end_time)
             if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
                 bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
-                print('1')
                 second_game_world.add_object(bottle, 5)
                 drunk.bottle_number = (drunk.bottle_number + 1) % 16
                 drunk.check_attack_start_time = get_time()
@@ -183,6 +184,19 @@ def update():
         if drunk.check_dead_motion_end_time > 1:
             second_game_world.remove_object(drunk)
             game_framework.change_state(end_state)
+
+    if not drunk.is_dead:
+        if bottle:
+            for i in second_game_world.objects[5]:
+                if collide(dragon, i):
+                    if not dragon.is_beaten:
+                        dragon.life -= 1
+                        dragon.is_beaten = True
+                        dragon.invincible_start_time = get_time()
+                        second_game_world.remove_object(i)
+                else:
+                    if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
+                        second_game_world.remove_object(i)
 
 
 def draw():
