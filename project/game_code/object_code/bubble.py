@@ -35,7 +35,7 @@ class Bubble:
     def draw(self):
         if 80 < self.x < 880:
             self.image.clip_draw(int(self.frame) * 16, 224, 13, 13, self.x, self.y, 40, 40)
-            draw_rectangle(*self.get_bb())
+        #    draw_rectangle(*self.get_bb())
 
         else:
             self.image.clip_draw(0, 192, 14, 16, self.x, self.y, 50, 50)

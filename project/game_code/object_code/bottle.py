@@ -23,7 +23,7 @@ class Bottle:
         self.velocity = 0.5 * phase
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
+ #       draw_rectangle(*self.get_bb())
         self.image.clip_draw(int(self.frame) * 12 + 2, 0, 11, 14, self.x, self.y, 40, 40)
 
     def update(self):

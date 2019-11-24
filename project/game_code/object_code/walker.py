@@ -61,7 +61,7 @@ class Walker:
                 self.check_dead_motion_end_time = get_time() - self.check_dead_motion_time
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
+    #    draw_rectangle(*self.get_bb())
 
         if self.is_beaten:
             if not self.is_dead:
