@@ -29,7 +29,7 @@ class Drunk:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\boss.png')
-        self.hp = 20
+        self.hp = 1
         self.bottle_number = 0
         self.radius = 2
         self.angle = 0

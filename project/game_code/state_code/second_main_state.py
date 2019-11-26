@@ -19,6 +19,9 @@ from project.game_code.object_code.tadpole import Tadpole
 from project.game_code.object_code.drunk import Drunk
 from project.game_code.object_code.bubble import Bubble
 from project.game_code.object_code.bottle import Bottle
+from project.game_code.object_code.item_banana import Banana
+from project.game_code.object_code.item_turnip import Turnip
+from project.game_code.object_code.item_watermelon import Watermelon
 from project.game_code.stage_code.pink_background import Background
 
 name = "second_main_state"
@@ -33,6 +36,9 @@ is_drunk_spawn = False
 life = None
 font = None
 speed_item_count = None
+bananas = None
+turnips = None
+watermelons = None
 
 
 def collide(a, b):
@@ -107,7 +113,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn, bottle
+    global is_drunk_spawn, bottle, bananas, turnips, watermelons
     for game_object in second_game_world.all_objects():
         game_object.update()
 
@@ -130,11 +136,40 @@ def update():
                 if not tadpole.is_dead:
                     first_main_state.dragon.gold += 100
                     tadpole.is_dead = True
+                    fruit_random_spawn_percent = random.randint(1, 200)
+                    if fruit_random_spawn_percent <= 60:
+                        bananas = Banana(tadpole.x, tadpole.y)
+                        second_game_world.add_object(bananas, 6)
+                        bananas.spawn_start_time = get_time()
+                    elif fruit_random_spawn_percent <= 110:
+                        turnips = Turnip(tadpole.x, tadpole.y)
+                        second_game_world.add_object(turnips, 6)
+                        turnips.spawn_start_time = get_time()
+                    elif fruit_random_spawn_percent <= 140:
+                        watermelons = Watermelon(tadpole.x, tadpole.y)
+                        second_game_world.add_object(watermelons, 6)
+                        watermelons.spawn_start_time = get_time()
+                    tadpole.check_dead_motion_time = get_time()
                     tadpole.check_dead_motion_time = get_time()
 
     for tadpole in tadpoles:
         if tadpole.check_dead_motion_end_time > 1:
             second_game_world.remove_object(tadpole)
+
+    if second_game_world.objects[6]:
+        for i in second_game_world.objects[6]:
+            if i.spawn_check_time > 1:
+                i.is_spawn = True
+        for i in second_game_world.objects[6]:
+            if i.is_spawn:
+                if collide(dragon, i):
+                    if i.number == 1:
+                        dragon.gold += 50
+                    elif i.number == 2:
+                        dragon.gold += 100
+                    else:
+                        dragon.gold += 200
+                    second_game_world.remove_object(i)
 
     if not second_game_world.objects[1]:
         if not is_drunk_spawn:
