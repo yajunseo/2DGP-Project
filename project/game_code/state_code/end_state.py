@@ -8,7 +8,7 @@ name = "EndState"
 curtain = None
 background = None
 font = None
-game_over_font = None
+game_clear_font = None
 font_score = None
 score = None
 count = 0
@@ -17,10 +17,10 @@ ranking_list = []
 
 
 def enter():
-    global curtain, background, font, font_score, game_over_font, score, count, ranking_list
+    global curtain, background, font, font_score, game_clear_font, score, count, ranking_list
     curtain = load_image('sprite\\map\\curtain.png')
     background = load_image('sprite\\map\\check.png')
-    game_over_font = load_font('font.TTF', 70)
+    game_clear_font = load_font('font.TTF', 70)
     font = load_font('font.TTF', 30)
     font_score = load_font('font.TTF', 30)
     count = 0
@@ -59,9 +59,9 @@ def draw():
     background.draw(480, 300, 960, 600)
     curtain.draw(480, 300, 960, 600)
     if count <= 60:
-        game_over_font.draw(130, 400, 'GAME CLEAR', (255, 0, 0))
+        game_clear_font.draw(130, 400, 'GAME CLEAR', (255, 0, 0))
     else:
-        game_over_font.draw(130, 400, 'GAME CLEAR', (255, 94, 0))
+        game_clear_font.draw(130, 400, 'GAME CLEAR', (255, 94, 0))
         if count >= 120:
             count = 0
     font_score.draw(330, 350, 'SCORE: %d' % score, (255, 255, 255))

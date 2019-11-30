@@ -29,6 +29,7 @@ class Walker:
         self.check_start_time = time.time()
         self.check_turn_time = 0
         self.check_dead_motion_time = 0
+        self.is_fall = True
         self.check_dead_motion_end_time = 0
 
         if self.image is None:
@@ -38,27 +39,47 @@ class Walker:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_turn_time = time.time() - self.check_start_time
 
-        if not self.is_beaten:
-            if self.dir == 1:
-                if self.check_turn_time < 0.8:
-                    self.x += RUN_SPEED_PPS * game_framework.frame_time
+        if self.is_fall:
+            if not self.is_beaten:
+                self.y -= RUN_SPEED_PPS * game_framework.frame_time
+                if self.dir == 1:
+                    if self.check_turn_time < 0.8:
+                        self.x += RUN_SPEED_PPS * game_framework.frame_time
+                    else:
+                        self.dir = -1
+                        self.turn = 0
+                        self.check_start_time = time.time()
+
                 else:
-                    self.dir = -1
-                    self.turn = 0
-                    self.check_start_time = time.time()
+                    if self.check_turn_time < 0.8:
+                        self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                    else:
+                        self.dir = 1
+                        self.turn = 0
+                        self.check_start_time = time.time()
+                self.x = clamp(70, self.x, 960 - 70)
+        else:
+            if not self.is_beaten:
+                if self.dir == 1:
+                    if self.check_turn_time < 0.8:
+                        self.x += RUN_SPEED_PPS * game_framework.frame_time
+                    else:
+                        self.dir = -1
+                        self.turn = 0
+                        self.check_start_time = time.time()
+
+                else:
+                    if self.check_turn_time < 0.8:
+                        self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                    else:
+                        self.dir = 1
+                        self.turn = 0
+                        self.check_start_time = time.time()
+                self.x = clamp(70, self.x, 960 - 70)
 
             else:
-                if self.check_turn_time < 0.8:
-                    self.x -= RUN_SPEED_PPS * game_framework.frame_time
-                else:
-                    self.dir = 1
-                    self.turn = 0
-                    self.check_start_time = time.time()
-            self.x = clamp(70, self.x, 960 - 70)
-
-        else:
-            if self.is_dead:
-                self.check_dead_motion_end_time = get_time() - self.check_dead_motion_time
+                if self.is_dead:
+                    self.check_dead_motion_end_time = get_time() - self.check_dead_motion_time
 
     def draw(self):
     #    draw_rectangle(*self.get_bb())

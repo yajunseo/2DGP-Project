@@ -125,10 +125,14 @@ def update():
                 dragon.cancel_stop()
 
     for tadpole in tadpoles:
+        if bottom_collide(tadpole, background, 12):
+            tadpole.is_fall = False
+        else:
+            tadpole.is_fall = True
         if collide(dragon, tadpole):
             if not tadpole.is_beaten:
                 if not dragon.is_beaten:
-                    if dragon.life > 0:
+                    if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
@@ -190,7 +194,7 @@ def update():
             for i in second_game_world.objects[4]:
                 if collide(i, drunk):
                     second_game_world.remove_object(i)
-                    if drunk.hp > 0:
+                    if drunk.hp >= 0:
                         drunk.hp -= 1
                     else:
                         if not drunk.is_lock:
@@ -206,7 +210,7 @@ def update():
         if collide(dragon, drunk):
             if not drunk.is_lock:
                 if not dragon.is_beaten:
-                    if dragon.life > 0:
+                    if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
@@ -234,6 +238,11 @@ def update():
                     if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
                         second_game_world.remove_object(i)
 
+    if dragon.life < 0:
+        dragon.life = 3
+        dragon.x, dragon.y = 100, 50
+
+        game_framework.push_state(game_over_state)
 
 def draw():
     global font, gold

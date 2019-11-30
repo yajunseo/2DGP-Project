@@ -1,6 +1,9 @@
 from pico2d import *
 from project.game_code.state_code import game_framework
+from project.game_code.state_code import start_state
+from project.game_code.state_code import title_state
 from project.game_code.state_code import first_main_state
+from project.game_code.state_code import second_main_state
 
 name = "GameOverState"
 image = None
@@ -28,7 +31,7 @@ def handle_events():
 
 def draw():
     update_canvas()
-    image.draw(4480, 300, 960, 600)
+    image.draw(480, 300, 960, 600)
 
 
 def update():

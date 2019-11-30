@@ -2,7 +2,7 @@ from pico2d import *
 import time
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import title_state
-
+from project.game_code.state_code import game_over_state
 
 name = "StartState"
 image = None
@@ -12,6 +12,8 @@ logo_time = 0.0
 def enter():
     global image
     image = load_image('sprite\\state\\kpu_credit.png')
+
+
 
 
 def exit():

@@ -82,7 +82,6 @@ def enter():
 def exit():
     first_game_world.clear()
 
-
 def pause():
     pass
 
@@ -113,7 +112,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn, gold, damage, bottle, bananas, turnips, watermelons
+    global is_drunk_spawn, gold, damage, bottle, bananas, turnips, watermelons, walkers
     for game_object in first_game_world.all_objects():
         game_object.update()
 
@@ -126,10 +125,15 @@ def update():
 
     for walker in walkers:
         fruit_random_spawn_percent = random.randint(1, 200)
+        if bottom_collide(walker, background, 8):
+            walker.is_fall = False
+        else:
+            walker.is_fall = True
+
         if collide(dragon, walker):
             if not walker.is_beaten:
                 if not dragon.is_beaten:
-                    if dragon.life > 0:
+                    if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
@@ -209,7 +213,7 @@ def update():
         if collide(dragon, drunk):
             if not drunk.is_lock:
                 if not dragon.is_beaten:
-                    if dragon.life > 0:
+                    if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
@@ -229,7 +233,7 @@ def update():
             for i in first_game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
-                        if dragon.life > 0:
+                        if dragon.life >= 0:
                             dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()
@@ -237,6 +241,12 @@ def update():
                 else:
                     if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
                         first_game_world.remove_object(i)
+
+    if dragon.life < 0:
+        dragon.life = 3
+        dragon.x, dragon.y = 100, 50
+
+        game_framework.push_state(game_over_state)
 
 
 
