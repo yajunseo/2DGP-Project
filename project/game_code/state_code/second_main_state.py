@@ -241,6 +241,10 @@ def update():
     if dragon.life < 0:
         dragon.life = 3
         dragon.x, dragon.y = 100, 50
+        if first_main_state.dragon.gold >= 500:
+            first_main_state.dragon.gold -= 500
+        else:
+            first_main_state.dragon.gold = 0
 
         game_framework.push_state(game_over_state)
 
