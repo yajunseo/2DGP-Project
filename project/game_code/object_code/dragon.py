@@ -195,7 +195,7 @@ next_state_table = {
 
 class Dragon:
     def __init__(self):
-        self.x, self.y = 100, 50
+        self.x, self.y = 100, 60
         self.jump_y = 0
         self.image = load_image('sprite\\Character\\character.png')
         self.dir = 1
@@ -209,7 +209,7 @@ class Dragon:
         self.speed = RUN_SPEED_PPS
         self.is_beaten = False
         self.is_jump = False
-        self.is_fall = False
+        self.is_fall = True
         self.check_attack_delay_start_time = 0
         self.check_attack_delay_end_time = 0
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time

@@ -4,6 +4,7 @@ from project.game_code.state_code import start_state
 from project.game_code.state_code import title_state
 from project.game_code.state_code import first_main_state
 from project.game_code.state_code import second_main_state
+from project.game_code.state_code import third_main_state
 
 name = "GameOverState"
 image = None

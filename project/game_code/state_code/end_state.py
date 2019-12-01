@@ -2,6 +2,7 @@ from pico2d import *
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import first_main_state
 from project.game_code.state_code import second_main_state
+from project.game_code.state_code import third_main_state
 import json
 
 name = "EndState"
@@ -24,7 +25,7 @@ def enter():
     font = load_font('font.TTF', 30)
     font_score = load_font('font.TTF', 30)
     count = 0
-    score = second_main_state.get_gold()
+    score = third_main_state.get_gold()
     with open('ranking_data.json', 'r') as f:
         ranking_list = json.load(f)
 

@@ -12,6 +12,7 @@ from project.game_code.state_code import game_over_state
 from project.game_code.state_code import store_state
 from project.game_code.state_code import end_state
 from project.game_code.state_code import first_main_state
+from project.game_code.state_code import second_store_state
 from project.game_code.management_code import second_game_world
 
 from project.game_code.object_code.dragon import Dragon
@@ -222,7 +223,7 @@ def update():
 
         if drunk.check_dead_motion_end_time > 1:
             second_game_world.remove_object(drunk)
-            game_framework.change_state(end_state)
+            game_framework.change_state(second_store_state)
 
     if not drunk.is_dead:
         if bottle:
