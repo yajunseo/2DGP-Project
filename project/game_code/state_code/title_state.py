@@ -1,7 +1,7 @@
 from pico2d import *
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import first_main_state
-from project.game_code.state_code import second_main_state
+
 
 name = "TitleState"
 image = None

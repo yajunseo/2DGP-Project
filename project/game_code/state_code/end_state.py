@@ -3,6 +3,7 @@ from project.game_code.state_code import game_framework
 from project.game_code.state_code import first_main_state
 from project.game_code.state_code import second_main_state
 from project.game_code.state_code import third_main_state
+from project.game_code.state_code import title_state
 import json
 
 name = "EndState"
@@ -13,16 +14,17 @@ game_clear_font = None
 font_score = None
 score = None
 count = 0
-
+font_restart = None
 ranking_list = []
 
 
 def enter():
-    global curtain, background, font, font_score, game_clear_font, score, count, ranking_list
+    global curtain, background, font, font_score, game_clear_font, score, count, ranking_list, font_restart
     curtain = load_image('sprite\\map\\curtain.png')
     background = load_image('sprite\\map\\check.png')
     game_clear_font = load_font('font.TTF', 70)
     font = load_font('font.TTF', 30)
+    font_restart = load_font('font.TTF', 20)
     font_score = load_font('font.TTF', 30)
     count = 0
     score = third_main_state.get_gold()
@@ -37,8 +39,9 @@ def enter():
 
 
 def exit():
-    global image
-    del (image)
+    pass
+  #  global image
+#    del (image)
 
 
 def handle_events():
@@ -49,6 +52,8 @@ def handle_events():
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
+            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_r):
+                game_framework.change_state(title_state)
 
 
 def draw():
@@ -80,6 +85,8 @@ def draw():
         else:
             font.draw(330, 280 - i * 30, "#" + str(i + 1) + ".")
             font.draw(430, 280 - i * 30, "%0d" % (ranking_list[i]))
+
+        font_restart.draw(300, 500, "press R to restart", (255, 255, 0))
     update_canvas()
 
 

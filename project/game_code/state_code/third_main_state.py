@@ -9,10 +9,10 @@ from pico2d import *
 from project.game_code.state_code import game_framework
 from project.game_code.state_code import pause_state
 from project.game_code.state_code import game_over_state
-from project.game_code.state_code import store_state
+from project.game_code.state_code import second_store_state
 from project.game_code.state_code import end_state
 from project.game_code.state_code import first_main_state
-from project.game_code.management_code import third_game_world
+from project.game_code.management_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.pulpul import Pulpul
@@ -62,10 +62,11 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, pulpuls, drunk, life, font, gold, bottle, speed_item_count
-    speed_item_count = store_state.get_speed_item()
+    global dragon, background, pulpuls, drunk, life, font, gold, bottle, speed_item_count, is_drunk_spawn
+    is_drunk_spawn = False
+    speed_item_count = second_store_state.get_speed_item()
     dragon = Dragon()
-    dragon.life = store_state.get_life()
+    dragon.life = second_store_state.get_life()
     background = Background()
     pulpuls = [Pulpul(500, 25, 1), Pulpul(800, 25, -1), Pulpul(220, 130, -1),
               Pulpul(760, 130, 1), Pulpul(315, 240, -1), Pulpul(435, 349, 1),
@@ -73,14 +74,14 @@ def enter():
     drunk = Drunk()
     life = load_image('sprite\\Character\\life.png')
 
-    third_game_world.add_object(background, 0)
-    third_game_world.add_objects(pulpuls, 1)
-    third_game_world.add_object(dragon, 2)
+    game_world.add_object(background, 0)
+    game_world.add_objects(pulpuls, 1)
+    game_world.add_object(dragon, 2)
     font = load_font('font.TTF', 28)
 
 
 def exit():
-    third_game_world.clear()
+    game_world.clear()
 
 
 def pause():
@@ -107,14 +108,14 @@ def handle_events():
                 dragon.check_attack_delay_end_time = get_time() - dragon.check_attack_delay_start_time
                 if dragon.check_attack_delay_end_time > (0.3 - speed_item_count*0.1):
                     bubble = Bubble(dragon.x, dragon.y, dragon.dir)
-                    third_game_world.add_object(bubble, 4)
+                    game_world.add_object(bubble, 4)
                     dragon.check_attack_delay_end_time = 0
                     dragon.check_attack_delay_start_time = get_time()
 
 
 def update():
     global is_drunk_spawn, bottle, bananas, turnips, watermelons
-    for game_object in third_game_world.all_objects():
+    for game_object in game_world.all_objects():
         game_object.update()
 
     if dragon.y <= 26:
@@ -149,28 +150,28 @@ def update():
                     fruit_random_spawn_percent = random.randint(1, 200)
                     if fruit_random_spawn_percent <= 60:
                         bananas = Banana(pulpul.x, pulpul.y)
-                        third_game_world.add_object(bananas, 6)
+                        game_world.add_object(bananas, 6)
                         bananas.spawn_start_time = get_time()
                     elif fruit_random_spawn_percent <= 110:
                         turnips = Turnip(pulpul.x, pulpul.y)
-                        third_game_world.add_object(turnips, 6)
+                        game_world.add_object(turnips, 6)
                         turnips.spawn_start_time = get_time()
                     elif fruit_random_spawn_percent <= 140:
                         watermelons = Watermelon(pulpul.x, pulpul.y)
-                        third_game_world.add_object(watermelons, 6)
+                        game_world.add_object(watermelons, 6)
                         watermelons.spawn_start_time = get_time()
                     pulpul.check_dead_motion_time = get_time()
                     pulpul.check_dead_motion_time = get_time()
 
     for pulpul in pulpuls:
         if pulpul.check_dead_motion_end_time > 1:
-            third_game_world.remove_object(pulpul)
+            game_world.remove_object(pulpul)
 
-    if third_game_world.objects[6]:
-        for i in third_game_world.objects[6]:
+    if game_world.objects[6]:
+        for i in game_world.objects[6]:
             if i.spawn_check_time > 1:
                 i.is_spawn = True
-        for i in third_game_world.objects[6]:
+        for i in game_world.objects[6]:
             if i.is_spawn:
                 if collide(dragon, i):
                     if i.number == 1:
@@ -179,27 +180,27 @@ def update():
                         dragon.gold += 100
                     else:
                         dragon.gold += 200
-                    third_game_world.remove_object(i)
+                    game_world.remove_object(i)
 
-    if not third_game_world.objects[1]:
+    if not game_world.objects[1]:
         if not is_drunk_spawn:
-            third_game_world.add_object(drunk, 3)
+            game_world.add_object(drunk, 3)
             is_drunk_spawn = True
 
-    if third_game_world.objects[4]:
+    if game_world.objects[4]:
         for pulpul in pulpuls:
-            for i in third_game_world.objects[4]:
+            for i in game_world.objects[4]:
                 if collide(i, pulpul):
                     if not pulpul.is_beaten:
-                        third_game_world.remove_object(i)
+                        game_world.remove_object(i)
                         pulpul.is_beaten = True
 
     # dragon -> bubble
-    if third_game_world.objects[3]:
-        if third_game_world.objects[4]:
-            for i in third_game_world.objects[4]:
+    if game_world.objects[3]:
+        if game_world.objects[4]:
+            for i in game_world.objects[4]:
                 if collide(i, drunk):
-                    third_game_world.remove_object(i)
+                    game_world.remove_object(i)
                     if drunk.hp >= 0:
                         drunk.hp -= 1
                     else:
@@ -209,7 +210,7 @@ def update():
         if not drunk.is_lock:
             if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
                 bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
-                third_game_world.add_object(bottle, 5)
+                game_world.add_object(bottle, 5)
                 drunk.bottle_number = (drunk.bottle_number + 1) % 16
                 drunk.check_attack_start_time = get_time()
 
@@ -227,22 +228,22 @@ def update():
                     drunk.is_dead = True
 
         if drunk.check_dead_motion_end_time > 1:
-            third_game_world.remove_object(drunk)
+            game_world.remove_object(drunk)
             game_framework.change_state(end_state)
 
     if not drunk.is_dead:
         if bottle:
-            for i in third_game_world.objects[5]:
+            for i in game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
                         if dragon.life > 0:
                             dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()
-                        third_game_world.remove_object(i)
+                        game_world.remove_object(i)
                 else:
                     if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
-                        third_game_world.remove_object(i)
+                        game_world.remove_object(i)
 
     if dragon.life < 0:
         dragon.life = 3
@@ -252,18 +253,17 @@ def update():
         else:
             first_main_state.dragon.gold = 0
 
-        game_framework.push_state(game_over_state)
+        game_framework.change_state(game_over_state)
 
 def draw():
     global font, gold
     clear_canvas()
-    for game_object in third_game_world.all_objects():
+    for game_object in game_world.all_objects():
         game_object.draw()
     for i in range(dragon.life):
         life.draw(i*40+20, 580, 40, 40)
     font.draw(830, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
     update_canvas()
-
 
 def get_gold():
     return first_main_state.dragon.gold

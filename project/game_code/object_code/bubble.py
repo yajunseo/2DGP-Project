@@ -1,7 +1,6 @@
 from pico2d import *
 import time
-from project.game_code.management_code import first_game_world
-from project.game_code.management_code import second_game_world
+from project.game_code.management_code import game_world
 from project.game_code.state_code import game_framework
 
 PIXEL_PER_METER = (10.0 / 0.3)
@@ -59,8 +58,7 @@ class Bubble:
                     self.is_reflect = False
 
         if self.check_current_time >= 8:
-            second_game_world.remove_object(self)
-            first_game_world.remove_object(self)
+            game_world.remove_object(self)
 
     def get_bb(self):
         return self.x - 20, self.y - 20, self.x + 20, self.y + 20
