@@ -58,6 +58,10 @@ class Walker:
                         self.turn = 0
                         self.check_start_time = time.time()
                 self.x = clamp(70, self.x, 960 - 70)
+
+            if self.is_dead:
+                self.check_dead_motion_end_time = get_time() - self.check_dead_motion_time
+
         else:
             if not self.is_beaten:
                 if self.dir == 1:

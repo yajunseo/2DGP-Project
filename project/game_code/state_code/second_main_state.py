@@ -241,13 +241,6 @@ def update():
                         game_world.remove_object(i)
 
     if dragon.life < 0:
-        dragon.life = 3
-        dragon.x, dragon.y = 100, 50
-        if first_main_state.dragon.gold >= 500:
-            first_main_state.dragon.gold -= 500
-        else:
-            first_main_state.dragon.gold = 0
-
         game_framework.change_state(game_over_state)
 
 def draw():
