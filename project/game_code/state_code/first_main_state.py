@@ -93,7 +93,7 @@ def resume():
 
 
 def handle_events():
-    global bubble
+    global bubble, dragon
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -101,6 +101,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
+            dragon.is_move = False
             game_framework.push_state(pause_state)
         else:
             dragon.handle_event(event)

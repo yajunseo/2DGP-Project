@@ -217,6 +217,7 @@ class Dragon:
         self.invincible_start_time = 0
         self.invincible_check_time = 0
         self.gold = 0
+        self.is_move = False
 
     def update_state(self, state):
         if len(self.event_que) > 0:
@@ -243,7 +244,14 @@ class Dragon:
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
-            self.add_event(key_event)
+            if key_event == key_event_table[(SDL_KEYUP, SDLK_RIGHT)] or key_event == key_event_table[(SDL_KEYUP, SDLK_LEFT)]:
+                if not self.is_move:
+                    self.is_move = True
+                else:
+                    self.add_event(key_event)
+            else:
+                self.is_move = True
+                self.add_event(key_event)
 
     def get_bb(self):
         return self.x - 25, self.y - 25, self.x + 25, self.y + 25
