@@ -10,8 +10,8 @@ class Background:
 
     def draw(self):
         self.image.draw(480, 300, 960, 600)
-        for brick in self.get_bb():
-            draw_rectangle(*brick)
+  #      for brick in self.get_bb():
+   #         draw_rectangle(*brick)
 
     def get_bb(self):
         return [[1, 1, 200, 25],

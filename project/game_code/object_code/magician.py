@@ -44,6 +44,8 @@ class Magician:
         self.check_dead_motion_end_time = 0
         self.invincible_start_time = 0
         self.invincible_check_time = 0
+        self.second_phase_move_time_check = 0
+        self.second_phase_move_time_start = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
@@ -67,14 +69,11 @@ class Magician:
                         self.dir = 1
 
             elif self.phase == 2:
-                self.angle += 1
-                self.angle = self.angle % 360
-                self.x += self.radius * math.cos(self.angle * pi / 180)
-                self.y += self.radius * math.sin(self.angle * pi / 180)
-                if 90 <= self.angle <= 270:
-                    self.dir = -1
-                else:
-                    self.dir = 1
+                self.second_phase_move_time_check = get_time() - self.second_phase_move_time_start
+                if self.second_phase_move_time_check >= 2:
+                    self.x = random.randint(150, 810)
+                    self.y = random.randint(100, 500)
+                    self.second_phase_move_time_start = get_time()
 
             else:
                 if self.dir == 1:

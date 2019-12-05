@@ -198,6 +198,9 @@ def update():
                     game_world.remove_object(i)
                     if magician.hp >= 0:
                         magician.hp -= 1
+                        if magician.phase == 2:
+                            magician.second_phase_move_time_start = get_time()
+
                     else:
                         if not magician.is_lock:
                             magician.is_lock = True
@@ -242,6 +245,7 @@ def update():
 
     if dragon.life < 0:
         game_framework.change_state(game_over_state)
+    first_main_state.dragon.life = dragon.life
 
 def draw():
     global font, gold
