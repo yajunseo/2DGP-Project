@@ -40,6 +40,8 @@ class Redpole:
         self.is_lock = False
         self.check_attack_start_time = 0
         self.check_attack_end_time = 0
+        self.check_second_attack_start_time = 0
+        self.check_second_attack_end_time = 0
         self.check_dead_motion_start_time = 0
         self.check_dead_motion_end_time = 0
         self.invincible_start_time = 0
@@ -48,6 +50,7 @@ class Redpole:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_attack_end_time = get_time() - self.check_attack_start_time
+        self.check_second_attack_end_time = get_time() - self.check_second_attack_start_time
         if self.hp >= 7:
             self.phase = 1
         elif self.hp >= 4:

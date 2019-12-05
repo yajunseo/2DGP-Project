@@ -245,7 +245,7 @@ def update():
 
     if dragon.life < 0:
         game_framework.change_state(game_over_state)
-    first_main_state.dragon.life = dragon.life
+        first_main_state.gold = dragon.life
 
 def draw():
     global font, gold

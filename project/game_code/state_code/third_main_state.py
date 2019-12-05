@@ -19,6 +19,7 @@ from project.game_code.object_code.pulpul import Pulpul
 from project.game_code.object_code.redpole import Redpole
 from project.game_code.object_code.bubble import Bubble
 from project.game_code.object_code.lightning import Lightning
+from project.game_code.object_code.water import Water
 from project.game_code.object_code.item_banana import Banana
 from project.game_code.object_code.item_turnip import Turnip
 from project.game_code.object_code.item_watermelon import Watermelon
@@ -31,6 +32,7 @@ background = None
 pulpuls = None
 redpole = None
 bubble = None
+water = None
 lightning = None
 is_redpole_spawn = False
 life = None
@@ -62,7 +64,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, pulpuls, redpole, life, font, gold, lightning, speed_item_count, is_redpole_spawn
+    global dragon, background, pulpuls, redpole, life, font, gold, speed_item_count, is_redpole_spawn
     is_redpole_spawn = False
     speed_item_count = second_store_state.get_speed_item()
     dragon = Dragon()
@@ -114,7 +116,7 @@ def handle_events():
 
 
 def update():
-    global is_redpole_spawn, lightning, bananas, turnips, watermelons
+    global is_redpole_spawn, lightning, bananas, turnips, watermelons, water
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -214,6 +216,12 @@ def update():
                 redpole.lightning_number = (redpole.lightning_number + 1) % 16
                 redpole.check_attack_start_time = get_time()
 
+            if redpole.phase == 3:
+                if redpole.check_second_attack_end_time > (0.5 - (redpole.phase * 0.1)):
+                    water = Water(redpole.x, redpole.y, redpole.phase, (redpole.lightning_number + 8) % 16)
+                    game_world.add_object(water, 7)
+                    redpole.check_second_attack_start_time = get_time()
+
         if collide(dragon, redpole):
             if not redpole.is_lock:
                 if not dragon.is_beaten:
@@ -236,7 +244,20 @@ def update():
             for i in game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
-                        if dragon.life > 0:
+                        if dragon.life >= 0:
+                            dragon.life -= 1
+                        dragon.is_beaten = True
+                        dragon.invincible_start_time = get_time()
+                        game_world.remove_object(i)
+                else:
+                    if i.x < 0 or i.x > 960 or i.y < 0 or i.y > 550:
+                        game_world.remove_object(i)
+
+        if water:
+            for i in game_world.objects[7]:
+                if collide(dragon, i):
+                    if not dragon.is_beaten:
+                        if dragon.life >= 0:
                             dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()

@@ -17,12 +17,13 @@ class Lightning:
     image = None
 
     def __init__(self, x, y, phase, number):
-        if Lightning.image is None:
-            Lightning.image = load_image('sprite\\Effect\\thunderEffect.png')
         self.x, self.y, self.phase, self.dir = x, y, phase, number * 22.5
         self.frame = 0
         self.lightning_color = random.randint(1, 2)
         self.velocity = 0.5 * phase
+
+        if Lightning.image is None:
+            Lightning.image = load_image('sprite\\Effect\\thunderEffect.png')
 
     def draw(self):
  #       draw_rectangle(*self.get_bb())
