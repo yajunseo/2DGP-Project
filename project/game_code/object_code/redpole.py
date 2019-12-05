@@ -29,7 +29,7 @@ class Redpole:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\tadpole.png')
-        self.hp = 25
+        self.hp = 20
         self.lightning_number = 0
         self.radius = 2
         self.angle = 0
@@ -49,9 +49,9 @@ class Redpole:
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_attack_end_time = get_time() - self.check_attack_start_time
         self.check_second_attack_end_time = get_time() - self.check_second_attack_start_time
-        if self.hp >= 13:
+        if self.hp >= 17:
             self.phase = 1
-        elif self.hp >= 7:
+        elif self.hp >= 6:
             self.phase = 2
         else:
             self.phase = 3

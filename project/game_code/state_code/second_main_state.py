@@ -199,12 +199,13 @@ def update():
                     game_world.remove_object(i)
                     if magician.hp >= 0:
                         magician.hp -= 1
-                        if magician.phase == 2:
-                            magician.second_phase_move_time_start = get_time()
 
                     else:
                         if not magician.is_lock:
                             magician.is_lock = True
+
+        if magician.hp == 16:
+            magician.second_phase_move_time_start = get_time()
 
         if not magician.is_lock:
             if magician.check_attack_end_time > (0.5 - (magician.phase * 0.1)):
