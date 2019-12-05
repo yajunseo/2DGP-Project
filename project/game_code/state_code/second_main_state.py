@@ -17,9 +17,9 @@ from project.game_code.management_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.tadpole import Tadpole
-from project.game_code.object_code.drunk import Drunk
+from project.game_code.object_code.magician import Magician
 from project.game_code.object_code.bubble import Bubble
-from project.game_code.object_code.bottle import Bottle
+from project.game_code.object_code.fire import Fire
 from project.game_code.object_code.item_banana import Banana
 from project.game_code.object_code.item_turnip import Turnip
 from project.game_code.object_code.item_watermelon import Watermelon
@@ -30,10 +30,10 @@ name = "second_main_state"
 dragon = None
 background = None
 tadpoles = None
-drunk = None
+magician = None
 bubble = None
-bottle = None
-is_drunk_spawn = False
+fire = None
+is_magician_spawn = False
 life = None
 font = None
 speed_item_count = None
@@ -63,8 +63,8 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, tadpoles, drunk, life, font, gold, bottle, speed_item_count, is_drunk_spawn
-    is_drunk_spawn = False
+    global dragon, background, tadpoles, magician, life, font, gold, fire, speed_item_count, is_magician_spawn
+    is_magician_spawn = False
     speed_item_count = store_state.get_speed_item()
     dragon = Dragon()
     dragon.life = store_state.get_life()
@@ -72,7 +72,7 @@ def enter():
     tadpoles = [Tadpole(45, 157, 1),Tadpole(915, 157, -1), Tadpole(915, 373, -1),
                Tadpole(45, 373, 1), Tadpole(500, 157, -1),Tadpole(280, 373, 1),
                Tadpole(500, 265, 1),Tadpole(700, 373, -1)]
-    drunk = Drunk()
+    magician = Magician()
     life = load_image('sprite\\Character\\life.png')
 
     game_world.add_object(background, 0)
@@ -115,7 +115,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn, bottle, bananas, turnips, watermelons
+    global is_magician_spawn, fire, bananas, turnips, watermelons
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -178,9 +178,9 @@ def update():
                     game_world.remove_object(i)
 
     if not game_world.objects[1]:
-        if not is_drunk_spawn:
-            game_world.add_object(drunk, 3)
-            is_drunk_spawn = True
+        if not is_magician_spawn:
+            game_world.add_object(magician, 3)
+            is_magician_spawn = True
 
     if game_world.objects[4]:
         for tadpole in tadpoles:
@@ -194,40 +194,40 @@ def update():
     if game_world.objects[3]:
         if game_world.objects[4]:
             for i in game_world.objects[4]:
-                if collide(i, drunk):
+                if collide(i, magician):
                     game_world.remove_object(i)
-                    if drunk.hp >= 0:
-                        drunk.hp -= 1
+                    if magician.hp >= 0:
+                        magician.hp -= 1
                     else:
-                        if not drunk.is_lock:
-                            drunk.is_lock = True
+                        if not magician.is_lock:
+                            magician.is_lock = True
 
-        if not drunk.is_lock:
-            if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
-                bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
-                game_world.add_object(bottle, 5)
-                drunk.bottle_number = (drunk.bottle_number + 1) % 16
-                drunk.check_attack_start_time = get_time()
+        if not magician.is_lock:
+            if magician.check_attack_end_time > (0.5 - (magician.phase * 0.1)):
+                fire = Fire(magician.x, magician.y, magician.phase, magician.fire_number)
+                game_world.add_object(fire, 5)
+                magician.fire_number = (magician.fire_number + 1) % 16
+                magician.check_attack_start_time = get_time()
 
-        if collide(dragon, drunk):
-            if not drunk.is_lock:
+        if collide(dragon, magician):
+            if not magician.is_lock:
                 if not dragon.is_beaten:
                     if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
-                if not drunk.is_dead:
+                if not magician.is_dead:
                     first_main_state.dragon.gold += 500
-                    drunk.check_dead_motion_start_time = get_time()
-                    drunk.is_dead = True
+                    magician.check_dead_motion_start_time = get_time()
+                    magician.is_dead = True
 
-        if drunk.check_dead_motion_end_time > 1:
-            game_world.remove_object(drunk)
+        if magician.check_dead_motion_end_time > 1:
+            game_world.remove_object(magician)
             game_framework.change_state(second_store_state)
 
-    if not drunk.is_dead:
-        if bottle:
+    if not magician.is_dead:
+        if fire:
             for i in game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:

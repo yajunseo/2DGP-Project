@@ -91,7 +91,7 @@ def draw():
         life_up.draw(230, 430, 70, 70)
         speed_up.draw(480, 430, 70, 70)
         door_open.draw(730, 430, 150, 150)
-    font.draw(830, 580, '%d' % second_main_state.dragon.gold, (255, 255, 255))
+    font.draw(830, 580, '%d' % first_main_state.dragon.gold, (255, 255, 255))
 
     update_canvas()
 

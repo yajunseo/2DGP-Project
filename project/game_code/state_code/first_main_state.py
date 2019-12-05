@@ -142,7 +142,6 @@ def update():
             else:
                 if not walker.is_dead:
                     walker.is_dead = True
-                    print(3)
                     dragon.gold += 100
                     fruit_random_spawn_percent = random.randint(1, 200)
                     if fruit_random_spawn_percent <= 60:
@@ -158,9 +157,6 @@ def update():
                         game_world.add_object(watermelons, 6)
                         watermelons.spawn_start_time = get_time()
                     walker.check_dead_motion_time = get_time()
-                    print(walker.check_dead_motion_time)
-                    print(walker.check_dead_motion_end_time)
-                    print(1)
 
     for walker in walkers:
         if walker.check_dead_motion_end_time > 1:
@@ -252,8 +248,6 @@ def update():
         game_framework.change_state(game_over_state)
 
 
-
-
 def draw():
     global font, gold
     clear_canvas()
@@ -264,4 +258,8 @@ def draw():
     font.draw(830, 580, '%d' % dragon.gold, (255, 255, 255))
 
     update_canvas()
+
+def get_gold():
+    return dragon.gold
+
 

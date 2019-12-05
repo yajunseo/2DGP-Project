@@ -22,15 +22,15 @@ dragon_x = 480
 dragon_y = 200
 
 
-class Magician:
+class Redpole:
     def __init__(self, x=dragon_x, y=dragon_y):
         self.x, self.y = x, y
         self.frame = 0
         self.dir = 1
         self.phase = 1
-        self.image = load_image('sprite\\Enemy\\magician.png')
+        self.image = load_image('sprite\\Enemy\\tadpole.png')
         self.hp = 1
-        self.fire_number = 0
+        self.lightning_number = 0
         self.radius = 2
         self.angle = 0
         self.speed_control = 0
@@ -116,12 +116,12 @@ class Magician:
 
             else:
                 if self.dir > 0:
-                    self.image.clip_draw(int(self.frame) * 16, 224, 16, 16, self.x, self.y, 200, 200)
+                    self.image.clip_draw(int(self.frame) * 16, 160, 16, 16, self.x, self.y, 200, 200)
                 else:
-                    self.image.clip_draw(int(self.frame) * 16, 240, 16, 16, self.x, self.y, 200, 200)
+                    self.image.clip_draw(int(self.frame) * 16, 176, 16, 16, self.x, self.y, 200, 200)
 
     def bottle(self):
-        bottle = Bottle(self.x, self.y, self.phase, self.fire_number)
+        bottle = Bottle(self.x, self.y, self.phase, self.bottle_number)
         game_world.add_object(bottle, 1)
 
     def get_bb(self):

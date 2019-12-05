@@ -16,9 +16,9 @@ from project.game_code.management_code import game_world
 
 from project.game_code.object_code.dragon import Dragon
 from project.game_code.object_code.pulpul import Pulpul
-from project.game_code.object_code.drunk import Drunk
+from project.game_code.object_code.redpole import Redpole
 from project.game_code.object_code.bubble import Bubble
-from project.game_code.object_code.bottle import Bottle
+from project.game_code.object_code.lightning import Lightning
 from project.game_code.object_code.item_banana import Banana
 from project.game_code.object_code.item_turnip import Turnip
 from project.game_code.object_code.item_watermelon import Watermelon
@@ -29,10 +29,10 @@ name = "second_main_state"
 dragon = None
 background = None
 pulpuls = None
-drunk = None
+redpole = None
 bubble = None
-bottle = None
-is_drunk_spawn = False
+lightning = None
+is_redpole_spawn = False
 life = None
 font = None
 speed_item_count = None
@@ -62,8 +62,8 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, pulpuls, drunk, life, font, gold, bottle, speed_item_count, is_drunk_spawn
-    is_drunk_spawn = False
+    global dragon, background, pulpuls, redpole, life, font, gold, lightning, speed_item_count, is_redpole_spawn
+    is_redpole_spawn = False
     speed_item_count = second_store_state.get_speed_item()
     dragon = Dragon()
     dragon.life = second_store_state.get_life()
@@ -71,7 +71,7 @@ def enter():
     pulpuls = [Pulpul(500, 25, 1), Pulpul(800, 25, -1), Pulpul(220, 130, -1),
               Pulpul(760, 130, 1), Pulpul(315, 240, -1), Pulpul(435, 349, 1),
               Pulpul(220, 445, 1), Pulpul(750, 455, -1)]
-    drunk = Drunk()
+    redpole = Redpole()
     life = load_image('sprite\\Character\\life.png')
 
     game_world.add_object(background, 0)
@@ -114,7 +114,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn, bottle, bananas, turnips, watermelons
+    global is_redpole_spawn, lightning, bananas, turnips, watermelons
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -183,9 +183,9 @@ def update():
                     game_world.remove_object(i)
 
     if not game_world.objects[1]:
-        if not is_drunk_spawn:
-            game_world.add_object(drunk, 3)
-            is_drunk_spawn = True
+        if not is_redpole_spawn:
+            game_world.add_object(redpole, 3)
+            is_redpole_spawn = True
 
     if game_world.objects[4]:
         for pulpul in pulpuls:
@@ -199,40 +199,40 @@ def update():
     if game_world.objects[3]:
         if game_world.objects[4]:
             for i in game_world.objects[4]:
-                if collide(i, drunk):
+                if collide(i, redpole):
                     game_world.remove_object(i)
-                    if drunk.hp >= 0:
-                        drunk.hp -= 1
+                    if redpole.hp >= 0:
+                        redpole.hp -= 1
                     else:
-                        if not drunk.is_lock:
-                            drunk.is_lock = True
+                        if not redpole.is_lock:
+                            redpole.is_lock = True
 
-        if not drunk.is_lock:
-            if drunk.check_attack_end_time > (0.5 - (drunk.phase * 0.1)):
-                bottle = Bottle(drunk.x, drunk.y, drunk.phase, drunk.bottle_number)
-                game_world.add_object(bottle, 5)
-                drunk.bottle_number = (drunk.bottle_number + 1) % 16
-                drunk.check_attack_start_time = get_time()
+        if not redpole.is_lock:
+            if redpole.check_attack_end_time > (0.5 - (redpole.phase * 0.1)):
+                lightning = Lightning(redpole.x, redpole.y, redpole.phase, redpole.lightning_number)
+                game_world.add_object(lightning, 5)
+                redpole.lightning_number = (redpole.lightning_number + 1) % 16
+                redpole.check_attack_start_time = get_time()
 
-        if collide(dragon, drunk):
-            if not drunk.is_lock:
+        if collide(dragon, redpole):
+            if not redpole.is_lock:
                 if not dragon.is_beaten:
                     if dragon.life >= 0:
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
-                if not drunk.is_dead:
+                if not redpole.is_dead:
                     first_main_state.dragon.gold += 500
-                    drunk.check_dead_motion_start_time = get_time()
-                    drunk.is_dead = True
+                    redpole.check_dead_motion_start_time = get_time()
+                    redpole.is_dead = True
 
-        if drunk.check_dead_motion_end_time > 1:
-            game_world.remove_object(drunk)
+        if redpole.check_dead_motion_end_time > 1:
+            game_world.remove_object(redpole)
             game_framework.change_state(end_state)
 
-    if not drunk.is_dead:
-        if bottle:
+    if not redpole.is_dead:
+        if lightning:
             for i in game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
