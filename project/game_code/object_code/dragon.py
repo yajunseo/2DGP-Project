@@ -213,7 +213,7 @@ class Dragon:
         self.check_attack_delay_end_time = 0
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
         self.is_beaten = False
-        self.life = 3
+        self.life = 5
         self.invincible_start_time = 0
         self.invincible_check_time = 0
         self.gold = 0

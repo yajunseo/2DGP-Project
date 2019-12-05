@@ -29,7 +29,7 @@ class Drunk:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\boss.png')
-        self.hp = 1
+        self.hp = 22
         self.bottle_number = 0
         self.radius = 2
         self.angle = 0
@@ -44,13 +44,15 @@ class Drunk:
         self.check_dead_motion_end_time = 0
         self.invincible_start_time = 0
         self.invincible_check_time = 0
+        self.phase_start_time = 0
+        self.phase_check_time = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         self.check_attack_end_time = get_time() - self.check_attack_start_time
-        if self.hp >= 7:
+        if self.hp >= 10:
             self.phase = 1
-        elif self.hp >= 4:
+        elif self.hp >= 5:
             self.phase = 2
         else:
             self.phase = 3
@@ -67,10 +69,13 @@ class Drunk:
                         self.dir = 1
 
             elif self.phase == 2:
-                self.angle += 1
-                self.angle = self.angle % 360
-                self.x += self.radius * math.cos(self.angle * pi / 180)
-                self.y += self.radius * math.sin(self.angle * pi / 180)
+                self.phase_check_time = get_time() - self.phase_start_time
+                if self.phase_check_time >= 0.01:
+                    self.angle += 1
+                    self.phase_start_time = get_time()
+                    self.angle = self.angle % 360
+                    self.x += self.radius * math.cos(self.angle * pi / 180)
+                    self.y += self.radius * math.sin(self.angle * pi / 180)
                 if 90 <= self.angle <= 270:
                     self.dir = -1
                 else:

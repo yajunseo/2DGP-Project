@@ -231,7 +231,7 @@ def update():
                     dragon.invincible_start_time = get_time()
             else:
                 if not redpole.is_dead:
-                    first_main_state.dragon.gold += 500
+                    first_main_state.dragon.gold += 900
                     redpole.check_dead_motion_start_time = get_time()
                     redpole.is_dead = True
 

@@ -29,7 +29,7 @@ class Magician:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\magician.png')
-        self.hp = 1
+        self.hp = 25
         self.fire_number = 0
         self.radius = 2
         self.angle = 0
@@ -50,7 +50,7 @@ class Magician:
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_attack_end_time = get_time() - self.check_attack_start_time
-        if self.hp >= 7:
+        if self.hp >= 10:
             self.phase = 1
         elif self.hp >= 4:
             self.phase = 2

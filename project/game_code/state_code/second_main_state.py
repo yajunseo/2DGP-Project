@@ -170,11 +170,11 @@ def update():
             if i.is_spawn:
                 if collide(dragon, i):
                     if i.number == 1:
-                        dragon.gold += 50
+                        first_main_state.dragon.gold += 50
                     elif i.number == 2:
-                        dragon.gold += 100
+                        first_main_state.dragon.gold += 100
                     else:
-                        dragon.gold += 200
+                        first_main_state.dragon.gold += 200
                     game_world.remove_object(i)
 
     if not game_world.objects[1]:
@@ -221,7 +221,7 @@ def update():
                     dragon.invincible_start_time = get_time()
             else:
                 if not magician.is_dead:
-                    first_main_state.dragon.gold += 500
+                    first_main_state.dragon.gold += 700
                     magician.check_dead_motion_start_time = get_time()
                     magician.is_dead = True
 
@@ -234,7 +234,7 @@ def update():
             for i in game_world.objects[5]:
                 if collide(dragon, i):
                     if not dragon.is_beaten:
-                        if dragon.life > 0:
+                        if dragon.life >= 0:
                             dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()
@@ -245,7 +245,6 @@ def update():
 
     if dragon.life < 0:
         game_framework.change_state(game_over_state)
-        first_main_state.gold = dragon.life
 
 def draw():
     global font, gold

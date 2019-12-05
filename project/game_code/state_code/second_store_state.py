@@ -57,7 +57,7 @@ def handle_events():
                     if first_main_state.dragon.gold >= 500:
                         item_count += 1
                         is_click = True
-                        first_main_state.dragon.life += 1
+                        second_main_state.dragon.life += 1
                 elif choose_button == 2:
                     if first_main_state.dragon.gold >= 500:
                         item_count += 1
@@ -74,7 +74,7 @@ def draw():
     clear_canvas()
     image.draw(480, 300, 960, 600)
 #    life.draw(40 + 20, 580, 40, 40)
-    for i in range(first_main_state.dragon.life):
+    for i in range(second_main_state.dragon.life):
         life.draw(i * 40 + 20, 580, 40, 40)
 
     if choose_button == 1:
@@ -115,7 +115,7 @@ def resume():
     pass
 
 def get_life():
-    return first_main_state.dragon.life
+    return second_main_state.dragon.life
 
 def get_speed_item():
     return speed_item_count

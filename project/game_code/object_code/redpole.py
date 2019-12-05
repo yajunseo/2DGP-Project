@@ -29,7 +29,7 @@ class Redpole:
         self.dir = 1
         self.phase = 1
         self.image = load_image('sprite\\Enemy\\tadpole.png')
-        self.hp = 1
+        self.hp = 25
         self.lightning_number = 0
         self.radius = 2
         self.angle = 0
@@ -44,16 +44,14 @@ class Redpole:
         self.check_second_attack_end_time = 0
         self.check_dead_motion_start_time = 0
         self.check_dead_motion_end_time = 0
-        self.invincible_start_time = 0
-        self.invincible_check_time = 0
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 12
         self.check_attack_end_time = get_time() - self.check_attack_start_time
         self.check_second_attack_end_time = get_time() - self.check_second_attack_start_time
-        if self.hp >= 7:
+        if self.hp >= 13:
             self.phase = 1
-        elif self.hp >= 4:
+        elif self.hp >= 7:
             self.phase = 2
         else:
             self.phase = 3
@@ -70,14 +68,23 @@ class Redpole:
                         self.dir = 1
 
             elif self.phase == 2:
-                self.angle += 1
-                self.angle = self.angle % 360
-                self.x += self.radius * math.cos(self.angle * pi / 180)
-                self.y += self.radius * math.sin(self.angle * pi / 180)
-                if 90 <= self.angle <= 270:
-                    self.dir = -1
+                if self.dir == 1:
+                    self.x += RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x >= 870:
+                        self.dir = -1
                 else:
-                    self.dir = 1
+                    self.x -= RUN_SPEED_PPS * game_framework.frame_time
+                    if self.x <= 90:
+                        self.dir = 1
+
+                if self.y_direction == 1:
+                    self.y += RUN_SPEED_PPS * game_framework.frame_time
+                    if self.y >= 470:
+                        self.y_direction = -1
+                else:
+                    self.y -= RUN_SPEED_PPS * game_framework.frame_time
+                    if self.y <= 90:
+                        self.y_direction = 1
 
             else:
                 if self.dir == 1:

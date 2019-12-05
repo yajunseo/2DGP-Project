@@ -180,6 +180,7 @@ def update():
     if not game_world.objects[1]:
         if not is_drunk_spawn:
             game_world.add_object(drunk, 3)
+            drunk.phase_start_time = get_time()
             is_drunk_spawn = True
 
     if game_world.objects[4]:
