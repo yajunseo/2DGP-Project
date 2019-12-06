@@ -8,16 +8,21 @@ from project.game_code.state_code import third_main_state
 
 name = "GameOverState"
 image = None
-
+game_over_sound = None
 
 def enter():
-    global image
+    global image,game_over_sound
     image = load_image('sprite\\state\\game-over.png')
+
+    game_over_sound = load_wav('sound\\gameover.wav')
+    game_over_sound.set_volume(50)
+    game_over_sound.play(1)
 
 
 def exit():
-    global image
+    global image, game_over_sound
     del image
+    del game_over_sound
 
 
 def handle_events():

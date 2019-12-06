@@ -7,13 +7,15 @@ from project.game_code.state_code import game_over_state
 name = "StartState"
 image = None
 logo_time = 0.0
+kpu_start_sound = None
 
 
 def enter():
-    global image
+    global image, kpu_start_sound
     image = load_image('sprite\\state\\kpu_credit.png')
-
-
+    kpu_start_sound = load_wav('sound\\kpu.wav')
+    kpu_start_sound.set_volume(50)
+    kpu_start_sound.play()
 
 
 def exit():
@@ -25,7 +27,7 @@ def update():
     global logo_time
     logo_time = get_time()
 
-    if logo_time > 2.0:
+    if logo_time > 3.5:
         logo_time = 0
         game_framework.change_state(title_state)
     delay(0.01)

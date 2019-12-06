@@ -16,10 +16,11 @@ score = None
 count = 0
 font_restart = None
 ranking_list = []
+end_sound = None
 
 
 def enter():
-    global curtain, background, font, font_score, game_clear_font, score, count, ranking_list, font_restart
+    global curtain, background, font, font_score, game_clear_font, score, count, ranking_list, font_restart, end_sound
     curtain = load_image('sprite\\map\\curtain.png')
     background = load_image('sprite\\map\\check.png')
     game_clear_font = load_font('font.TTF', 70)
@@ -37,9 +38,14 @@ def enter():
     with open('ranking_data.json', 'w') as f:
         json.dump(ranking_list, f)
 
+    end_sound = load_wav('sound\\end.wav')
+    end_sound.set_volume(50)
+    end_sound.repeat_play()
+
 
 def exit():
-    pass
+    global end_sound
+    del end_sound
   #  global image
 #    del (image)
 

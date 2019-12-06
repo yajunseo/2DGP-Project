@@ -8,17 +8,23 @@ name = "TitleState"
 image = None
 count = None
 font = None
+title_sound = None
 
 def enter():
-    global image, count, font
+    global image, count, font, title_sound
     count = 0
     image = load_image('sprite\\state\\title1.png')
     font = load_font('font.TTF', 26)
+    title_sound = load_image('sprite\\state\\kpu_credit.png')
+    title_sound = load_wav('sound\\title.wav')
+    title_sound.set_volume(50)
+    title_sound.repeat_play()
 
 
 def exit():
-    global image
+    global image, title_sound
     del (image)
+    del title_sound
 
 
 def handle_events():

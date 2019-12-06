@@ -41,6 +41,8 @@ speed_item_count = None
 bananas = None
 turnips = None
 watermelons = None
+main_sound = None
+boss_sound = None
 
 
 def collide(a, b):
@@ -64,7 +66,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, pulpuls, redpole, life, font, gold, speed_item_count, is_redpole_spawn
+    global dragon, background, pulpuls, redpole, life, font, gold, speed_item_count, is_redpole_spawn, main_sound, boss_sound
     is_redpole_spawn = False
     speed_item_count = second_store_state.get_speed_item()
     dragon = Dragon()
@@ -81,8 +83,20 @@ def enter():
     game_world.add_object(dragon, 2)
     font = load_font('font.TTF', 28)
 
+    main_sound = load_image('sprite\\state\\kpu_credit.png')
+    main_sound = load_wav('sound\\mainstage.wav')
+    main_sound.set_volume(50)
+    main_sound.repeat_play()
+    boss_sound = load_image('sprite\\state\\kpu_credit.png')
+    boss_sound = load_wav('sound\\stage3_boss.wav')
+    boss_sound.set_volume(50)
+
 
 def exit():
+    global boss_sound, main_sound, is_redpole_spawn
+    del boss_sound
+    if not is_redpole_spawn:
+        del main_sound
     game_world.clear()
 
 
@@ -117,7 +131,7 @@ def handle_events():
 
 
 def update():
-    global is_redpole_spawn, lightning, bananas, turnips, watermelons, water
+    global is_redpole_spawn, lightning, bananas, turnips, watermelons, water, main_sound, boss_sound
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -187,6 +201,8 @@ def update():
 
     if not game_world.objects[1]:
         if not is_redpole_spawn:
+            del main_sound
+            boss_sound.repeat_play()
             game_world.add_object(redpole, 3)
             is_redpole_spawn = True
 

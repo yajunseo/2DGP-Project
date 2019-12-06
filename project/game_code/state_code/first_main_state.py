@@ -38,6 +38,8 @@ damage = None
 bananas = None
 turnips = None
 watermelons = None
+main_sound = None
+boss_sound = None
 
 
 def collide(a, b):
@@ -61,7 +63,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, walkers, drunk, life, font, gold, damage, is_drunk_spawn
+    global dragon, background, walkers, drunk, life, font, gold, damage, is_drunk_spawn, main_sound, boss_sound
     is_drunk_spawn = False
     dragon = Dragon()
     background = Background()
@@ -76,12 +78,24 @@ def enter():
     game_world.add_object(background, 0)
     game_world.add_objects(walkers, 1)
     game_world.add_object(dragon, 2)
+    main_sound = load_image('sprite\\state\\kpu_credit.png')
+    main_sound = load_wav('sound\\mainstage.wav')
+    main_sound.set_volume(50)
+    main_sound.repeat_play()
+    boss_sound = load_image('sprite\\state\\kpu_credit.png')
+    boss_sound = load_wav('sound\\stage1_boss.wav')
+    boss_sound.set_volume(50)
+
 
 
 #    game_world.add_object(drunk, 3)
 
 
 def exit():
+    global boss_sound, main_sound, is_drunk_spawn
+    del boss_sound
+    if not is_drunk_spawn:
+        del main_sound
     game_world.clear()
 
 def pause():
@@ -115,7 +129,7 @@ def handle_events():
 
 
 def update():
-    global is_drunk_spawn, gold, damage, bottle, bananas, turnips, watermelons, walkers
+    global is_drunk_spawn, gold, damage, bottle, bananas, turnips, watermelons, walkers, main_sound, boss_sound
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -181,6 +195,8 @@ def update():
     if not game_world.objects[1]:
         if not is_drunk_spawn:
             game_world.add_object(drunk, 3)
+            del main_sound
+            boss_sound.repeat_play()
             drunk.phase_start_time = get_time()
             is_drunk_spawn = True
 

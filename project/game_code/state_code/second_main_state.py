@@ -40,7 +40,8 @@ speed_item_count = None
 bananas = None
 turnips = None
 watermelons = None
-
+main_sound = None
+boss_sound = None
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -63,7 +64,7 @@ def bottom_collide(a, b, n):
 
 
 def enter():
-    global dragon, background, tadpoles, magician, life, font, gold, fire, speed_item_count, is_magician_spawn
+    global dragon, background, tadpoles, magician, life, font, gold, fire, speed_item_count, is_magician_spawn, main_sound, boss_sound
     is_magician_spawn = False
     speed_item_count = store_state.get_speed_item()
     dragon = Dragon()
@@ -80,8 +81,20 @@ def enter():
     game_world.add_object(dragon, 2)
     font = load_font('font.TTF', 28)
 
+    main_sound = load_image('sprite\\state\\kpu_credit.png')
+    main_sound = load_wav('sound\\mainstage.wav')
+    main_sound.set_volume(50)
+    main_sound.repeat_play()
+    boss_sound = load_image('sprite\\state\\kpu_credit.png')
+    boss_sound = load_wav('sound\\stage2_boss.wav')
+    boss_sound.set_volume(50)
+
 
 def exit():
+    global boss_sound, main_sound, is_magician_spawn
+    del boss_sound
+    if not is_magician_spawn:
+        del main_sound
     game_world.clear()
 
 
@@ -116,7 +129,7 @@ def handle_events():
 
 
 def update():
-    global is_magician_spawn, fire, bananas, turnips, watermelons
+    global is_magician_spawn, fire, bananas, turnips, watermelons, main_sound, boss_sound
     for game_object in game_world.all_objects():
         game_object.update()
 
@@ -180,6 +193,8 @@ def update():
 
     if not game_world.objects[1]:
         if not is_magician_spawn:
+            del main_sound
+            boss_sound.repeat_play()
             game_world.add_object(magician, 3)
             is_magician_spawn = True
 
