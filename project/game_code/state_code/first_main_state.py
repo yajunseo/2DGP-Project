@@ -88,6 +88,7 @@ def enter():
 
 
 
+
 #    game_world.add_object(drunk, 3)
 
 
@@ -122,6 +123,7 @@ def handle_events():
             if event.type == SDL_KEYDOWN and event.key == SDLK_LCTRL:
                 dragon.check_attack_delay_end_time = get_time() - dragon.check_attack_delay_start_time
                 if dragon.check_attack_delay_end_time > 0.3:
+                    dragon.sound_attack()
                     bubble = Bubble(dragon.x, dragon.y, dragon.dir)
                     game_world.add_object(bubble, 4)
                     dragon.check_attack_delay_end_time = 0
@@ -152,10 +154,12 @@ def update():
                 if not dragon.is_beaten:
                     if dragon.life >= 0:
                         dragon.life -= 1
+                        dragon.sound_beat()
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
                 if not walker.is_dead:
+                    dragon.sound_kill_monster()
                     walker.is_dead = True
                     dragon.gold += 100
                     fruit_random_spawn_percent = random.randint(1, 200)
@@ -184,6 +188,7 @@ def update():
         for i in game_world.objects[6]:
             if i.is_spawn:
                 if collide(dragon, i):
+                    dragon.sound_eat_fruit()
                     if i.number == 1:
                         dragon.gold += 50
                     elif i.number == 2:
@@ -234,11 +239,13 @@ def update():
             if not drunk.is_lock:
                 if not dragon.is_beaten:
                     if dragon.life >= 0:
+                        dragon.sound_beat()
                         dragon.life -= 1
                     dragon.is_beaten = True
                     dragon.invincible_start_time = get_time()
             else:
                 if not drunk.is_dead:
+                    dragon.sound_kill_monster()
                     dragon.gold += 500
                     drunk.check_dead_motion_start_time = get_time()
                     drunk.is_dead = True
@@ -254,6 +261,7 @@ def update():
                 if collide(dragon, i):
                     if not dragon.is_beaten:
                         if dragon.life >= 0:
+                            dragon.sound_beat()
                             dragon.life -= 1
                         dragon.is_beaten = True
                         dragon.invincible_start_time = get_time()

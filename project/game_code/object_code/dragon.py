@@ -31,6 +31,7 @@ class IdleState:
     def enter(Dragon, event):
         if event == SPACE:
             if not Dragon.is_jump:
+                Dragon.sound_jump()
                 Dragon.is_jump = True
                 Dragon.is_fall = False
                 Dragon.jump_speed = Dragon.speed * game_framework.frame_time
@@ -109,6 +110,7 @@ class RunState:
     def enter(Dragon, event):
         if event == SPACE:
             if not Dragon.is_jump:
+                Dragon.sound_jump()
                 Dragon.is_jump = True
                 Dragon.is_fall = False
                 Dragon.jump_speed = Dragon.speed * game_framework.frame_time
@@ -218,6 +220,17 @@ class Dragon:
         self.invincible_check_time = 0
         self.gold = 0
         self.is_move = False
+        self.attack_sound = load_wav('sound\\attack.wav')
+        self.attack_sound.set_volume(30)
+        self.eat_fruit_sound = load_wav('sound\\fruit_item.wav')
+        self.eat_fruit_sound.set_volume(30)
+        self.jump_sound = load_wav('sound\\jump.wav')
+        self.jump_sound.set_volume(30)
+        self.kill_monster_sound = load_wav('sound\\monster_die.wav')
+        self.kill_monster_sound.set_volume(30)
+        self.beat_sound = load_wav('sound\\beat.wav')
+        self.beat_sound.set_volume(30)
+
 
     def update_state(self, state):
         if len(self.event_que) > 0:
@@ -264,6 +277,17 @@ class Dragon:
         self.jump_speed = RUN_SPEED_PPS * game_framework.frame_time
         self.is_jump = True
 
+    def sound_attack(self):
+        self.attack_sound.play()
 
+    def sound_eat_fruit(self):
+        self.eat_fruit_sound.play()
 
+    def sound_jump(self):
+        self.jump_sound.play()
 
+    def sound_kill_monster(self):
+        self.kill_monster_sound.play()
+
+    def sound_beat(self):
+        self.beat_sound.play()

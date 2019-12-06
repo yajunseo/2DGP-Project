@@ -17,10 +17,13 @@ life = None
 choose_button = 1
 item_count = 0
 speed_item_count = 0
+buy_sound = None
+door = None
+no_money = None
 
 
 def enter():
-    global image, door_close, door_open, speed_up, life_up, font, life
+    global image, door_close, door_open, speed_up, life_up, font, life, buy_sound, door, no_money
     image = load_image('sprite\\state\\store.png')
     door_close = load_image('sprite\\state\\door_close.png')
     door_open = load_image('sprite\\state\\door_open.png')
@@ -28,6 +31,13 @@ def enter():
     life_up = load_image('sprite\\state\\1UP.png')
     font = load_font('font.TTF', 28)
     life = load_image('sprite\\Character\\life.png')
+    buy_sound = load_wav('sound\\store.wav')
+    buy_sound.set_volume(100)
+    door = load_wav('sound\\door.wav')
+    door.set_volume(80)
+    no_money = load_wav('sound\\no_money.wav')
+    no_money.set_volume(80)
+
 
 def exit():
     global image
@@ -35,7 +45,7 @@ def exit():
 
 
 def handle_events():
-    global choose_button, item_count, is_click, speed_item_count
+    global choose_button, item_count, is_click, speed_item_count, buy_sound, door, no_money
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -55,15 +65,22 @@ def handle_events():
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 if choose_button == 1:
                     if first_main_state.dragon.gold >= 500:
+                        buy_sound.play()
                         item_count += 1
                         is_click = True
                         first_main_state.dragon.life += 1
+                    else:
+                        no_money.play()
                 elif choose_button == 2:
                     if first_main_state.dragon.gold >= 500:
+                        buy_sound.play()
                         item_count += 1
                         speed_item_count += 1
                         is_click = True
+                    else:
+                        no_money.play()
                 else:
+                    door.play()
                     game_framework.change_state(second_main_state)
 
 
